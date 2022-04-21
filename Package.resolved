@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "narratore",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/broomburgo/Narratore",
+      "state" : {
+        "branch" : "main",
+        "revision" : "adfc4284580aa22444cd4b5f70c4f124897890b8"
+      }
+    }
+  ],
+  "version" : 2
+}
