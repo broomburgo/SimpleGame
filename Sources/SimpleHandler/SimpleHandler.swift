@@ -1,6 +1,5 @@
 import Foundation
 import Narratore
-import SimpleSetting
 
 private let directoryPath = "SimpleGameSupportingFiles"
 private let filePath = "\(directoryPath)/Status.json"

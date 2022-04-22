@@ -38,7 +38,7 @@ let package = Package(
     ),
     .target(
       name: "SimpleHandler",
-      dependencies: ["Narratore", "SimpleSetting"]
+      dependencies: ["Narratore"]
     ),
     .target(
       name: "SimpleSetting",
