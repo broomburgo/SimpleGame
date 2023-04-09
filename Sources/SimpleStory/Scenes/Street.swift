@@ -1,19 +1,14 @@
 import Narratore
 import SimpleSetting
 
-public struct Street: Scene {
-  public typealias Game = SimpleStory
-
-  public init() {}
-
-  public static let branches: [RawBranch<SimpleStory>] = [
+public enum Street {
+  public static let scenes: [RawScene<SimpleStory>] = [
     Main.raw,
     LookingAround.raw,
   ]
 
-  public enum Main: Branch {
-    @BranchBuilder<Self>
-    public static func getSteps(for _: Street) -> [BranchStep<Self>] {
+  public struct Main: SceneType {
+    public var steps: Steps {
       "It's a rainy evening, and the street is almost empty"
       "Few people live in this part of town. This is one of those neighborhoods that, while not exactly bad per se, has a fame of being inhabited by 'weird' people"
       "You can say that it even attracts people that think of themselves as 'weird'"
@@ -72,17 +67,16 @@ public struct Street: Scene {
 
       "And let's get to work"
 
-      then(.transitionTo(LookingAround.self, scene: .init()))
+      then { .transitionTo(LookingAround()) }
     }
   }
 
-  public enum LookingAround: Branch {
-    public enum Anchor {
+  public struct LookingAround: SceneType {
+    public enum Anchor: Codable & Hashable {
       case backInStreet
     }
 
-    @BranchBuilder<Self>
-    public static func getSteps(for scene: Street) -> [BranchStep<Self>] {
+    public var steps: Steps {
       "The rain is thin but persistent"
 
       update {
@@ -148,36 +142,44 @@ public struct Street: Scene {
       choose { context in
         if context.script.hasDescribed(.bookshop), !context.world.wasTheKeyFound {
           "The bookshop".onSelect {
-            "You enter the bookshop".then(.runThrough(Bookshop.init(
-              status: context.world.wasTheBookshopTrashed
-                ? .trashed
-                : .regular
-            )))
+            "You enter the bookshop".then {
+              .runThrough(Bookshop.Main(
+                status: context.world.wasTheBookshopTrashed
+                  ? .trashed
+                  : .regular
+              ))
+            }
           }
         }
 
         if context.script.hasDescribed(.groceryStore) {
           "The grocery store".onSelect {
-            "You go to the grocery store".then(.runThrough(GroceryStore.init()))
+            "You go to the grocery store".then {
+              .runThrough(GroceryStore.Main())
+            }
           }
         }
 
         if context.script.hasDescribed(.darkAlley) {
           "The dark alley".onSelect {
-            "You enter the dark alley".then(.runThrough(DarkAlley.init(world: context.world)))
+            "You enter the dark alley".then {
+              .runThrough(DarkAlley(world: context.world))
+            }
           }
         }
 
         if context.script.hasDescribed(.apartment7) {
           "The apartment block".onSelect {
-            "You enter the building".then(.runThrough(Apartment7.init()))
+            "You enter the building".then {
+              .runThrough(Apartment7.Main())
+            }
           }
         }
       }
 
       "You're back in the street"
 
-      then(.replaceWith(Self.self, at: .backInStreet, scene: scene))
+      then { .replaceWith(self, at: .backInStreet) }
     }
   }
 }

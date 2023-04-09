@@ -1,26 +1,20 @@
 import Narratore
 import SimpleSetting
 
-public struct Apartment7: Scene {
-  public typealias Game = SimpleStory
-
-  var breakTheDoorCounter: Int
-
-  public init(breakTheDoorCounter: Int = 0) {
-    self.breakTheDoorCounter = breakTheDoorCounter
-  }
-
-  public static let branches: [RawBranch<SimpleStory>] = [
+public enum Apartment7 {
+  public static let scenes: [RawScene<SimpleStory>] = [
     Main.raw,
+    TheApartment.raw,
   ]
 
-  public enum Main: Branch {
-    public enum Anchor {
+  public struct Main: SceneType {
+    public enum Anchor: Codable & Hashable {
       case atTheDoor
     }
 
-    @BranchBuilder<Self>
-    public static func getSteps(for scene: Apartment7) -> [BranchStep<Self>] {
+    var breakTheDoorCounter: Int = 0
+
+    public var steps: Steps {
       "You get to apartment 7"
 
       tell {
@@ -44,17 +38,21 @@ public struct Apartment7: Scene {
               "You put the key in the locket and turn it counterclockwise"
               "The door unlocks"
               "You feel happy, and enter the apartment"
-            }.then(.transitionTo(TheApartment.self, scene: scene))
+            }.then {
+              .transitionTo(TheApartment())
+            }
           }
         }
 
-        switch scene.breakTheDoorCounter {
+        switch breakTheDoorCounter {
         case 0:
           "Try to break down the door".onSelect {
             tell {
               "You try break down the door with a push"
               "The door doesn't bulge"
-            }.then(.replaceWith(Self.self, at: .atTheDoor, scene: .init(breakTheDoorCounter: 1)))
+            }.then {
+              .replaceWith(self.updating { $0.breakTheDoorCounter = 1 }, at: .atTheDoor)
+            }
           }
 
         case 1:
@@ -62,7 +60,9 @@ public struct Apartment7: Scene {
             tell {
               "You try again"
               "You're pushing as hard as you can, but your \"build\" is not exactly one of a door-breaker"
-            }.then(.replaceWith(Self.self, at: .atTheDoor, scene: .init(breakTheDoorCounter: 2)))
+            }.then {
+              .replaceWith(self.updating { $0.breakTheDoorCounter = 2 }, at: .atTheDoor)
+            }
           }
 
         case 2:
@@ -71,7 +71,9 @@ public struct Apartment7: Scene {
               "You're basically hurting yourself"
               "It almost feels like the door is made of granite"
               "But it's more likely that you're body is made of jelly"
-            }.then(.replaceWith(Self.self, at: .atTheDoor, scene: .init(breakTheDoorCounter: 3)))
+            }.then {
+              .replaceWith(self.updating { $0.breakTheDoorCounter = 3 }, at: .atTheDoor)
+            }
           }
 
         default:
@@ -81,7 +83,9 @@ public struct Apartment7: Scene {
               "Maybe you should look for help"
               "It's going to be weird to ask someone to help you break into an apartment"
               "But you don't see many alternatives"
-            }.then(.replaceWith(LookForHelp.init()))
+            }.then {
+              .replaceWith(LookForHelp.Main())
+            }
           }
         }
 
@@ -92,9 +96,8 @@ public struct Apartment7: Scene {
     }
   }
 
-  public enum TheApartment: Branch {
-    @BranchBuilder<Self>
-    public static func getSteps(for _: Apartment7) -> [BranchStep<Self>] {
+  public struct TheApartment: SceneType {
+    public var steps: Steps {
       "It's really dark, the windows are shut, and the lights don't work"
       "You activate the flashlight on your smartphone, but the battery is almost dead, it's not going to last long"
       "You ask if someone is there, with a voice loud enough to be clearly heard within the apartment, but not so that would disturb the neighbors"
@@ -102,7 +105,7 @@ public struct Apartment7: Scene {
       "The apartment itself is a mess"
       "There's books everywhere, some probably from the bookshop"
       "But no clear clue of where's the person you're looking for"
-      
+
       tell {
         if Deduction.allCases.allSatisfy($0.world.hasDeduced) {
           "But everything leads here"
@@ -112,11 +115,10 @@ public struct Apartment7: Scene {
           "It must be it"
         }
       }
-      
+
       choose {
         let (_, their, _) = $0.world.targetPersonPronoun
-        
-        
+
         "This must be \(their) apartment".onSelect {
           tell {
             "This must be \(their) apartment"
@@ -126,7 +128,7 @@ public struct Apartment7: Scene {
             $0.increaseMentalHealth()
           }
         }
-        
+
         "Maybe this is not \(their) apartment".onSelect {
           tell {
             "Maybe this is not \(their) apartment"
@@ -139,9 +141,9 @@ public struct Apartment7: Scene {
           }
         }
       }
-      
+
       checkMentalHealth()
-      
+
       "You push yourself deeper into the apartment"
       "You decide to decrease the intensity of the flashlight, as to preserve battery"
       "Then you reach a strange door: it's open, but the insides are completely dark"
@@ -153,7 +155,7 @@ public struct Apartment7: Scene {
       "The humming intensifies, it clearly comes form here"
       "You start exploring the darkness of this place"
       "It's like a very large room, with columns, probably supporting the building above"
-      
+
       choose { _ in
         "Turn off the flashlight".onSelect {
           tell {
@@ -162,7 +164,7 @@ public struct Apartment7: Scene {
             "You go towards the light"
           }
         }
-        
+
         "Increase the flashlight intensity".onSelect {
           tell {
             "You temporarily increase the flashlight intensity, to look for clues"
@@ -173,12 +175,12 @@ public struct Apartment7: Scene {
           }
         }
       }
-      
+
       "You see an empty wooden table"
       "There's a drawer; you open it, and there'a rusty key inside"
       "You take the key: there must be some door around"
       "On the ceiling, a small hole, from which it drips a gooey substance"
-      
+
       tell {
         if $0.world.wasTheSlimyGooeySubstanceObservedInTheDarkAlley {
           "It must be the same substance you found in the dark alley"
@@ -187,11 +189,11 @@ public struct Apartment7: Scene {
           "And this \"something\" must be here, in this basement"
         }
       }
-      
+
       "You go look for the door, scouting the perimeter of this basement"
       "The wall is dirty and moldy, but not like those of abandoned basements"
       "It almost looks like someone did this on purpose"
-      
+
       check {
         if $0.world.didDepleteTheBatteryFaster {
           tell {
@@ -203,9 +205,9 @@ public struct Apartment7: Scene {
           }
         }
       }
-      
+
       checkMentalHealth()
-      
+
       "You keep going"
       "After turning a corner, you finally find a door"
       "It's a wooden door, seems extremely old, and not really appropriate for this building"
@@ -261,7 +263,7 @@ extension SimpleStory.World {
       value["didDescribeTheApartment7Door"] = newValue ? .positive : .negative
     }
   }
-  
+
   fileprivate var didDepleteTheBatteryFaster: Bool {
     get {
       value["didDepleteTheBatteryFaster"] == .positive

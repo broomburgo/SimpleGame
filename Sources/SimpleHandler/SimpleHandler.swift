@@ -6,7 +6,7 @@ private let filePath = "\(directoryPath)/Status.json"
 
 public final class SimpleHandler<Game: Story> {
   public init() {}
-  
+
   public func askToRestoreStatusIfPossible() -> Status<Game>? {
     let useFile: Bool
     if fm.fileExists(atPath: filePath) {
@@ -44,7 +44,7 @@ public final class SimpleHandler<Game: Story> {
   private let encoder = JSONEncoder()
   private let decoder = JSONDecoder()
   private let fm = FileManager.default
-  
+
   private func input(accepted: [String]) -> String {
     while true {
       guard let captured = readLine(), accepted.contains(captured) else {
@@ -61,7 +61,7 @@ extension SimpleHandler: Handler {
     if !narration.tags.isEmpty {
       print("[\(narration.tags.map { "\($0)" }.joined(separator: "|"))]")
     }
-    
+
     for message in narration.messages {
       print(message)
 
@@ -88,7 +88,7 @@ extension SimpleHandler: Handler {
 
     return .advance(with: choice.options[selected])
   }
-  
+
   public func handle(event: Player<Game>.Event) {
     switch event {
     case .statusUpdated(let status):
@@ -99,7 +99,7 @@ extension SimpleHandler: Handler {
       try? fm.createDirectory(atPath: "\(currentDirectory)/\(directoryPath)", withIntermediateDirectories: true)
       try? fm.removeItem(atPath: "\(currentDirectory)/\(filePath)")
       try? data.write(to: URL(fileURLWithPath: "\(currentDirectory)/\(filePath)"))
-      
+
     case .gameStarted(let status):
       print("""
       Welcome to Narratore!
@@ -108,19 +108,19 @@ extension SimpleHandler: Handler {
       This shouldn't be considered a production-ready application,
       but a basic showcase of the features of Narratore.
       Nevertheless, it works, so feel free to use and reuse the code as you see fit.
-      
+
       This engine saves the game state at every step into
       '\(filePath)', from the current working directory.
       If you launched this by double-clicking on it, the current working directory
       will likely be your home folder.
       You can exit at any time by pressing 'ctrl-c': next time you launch this,
       it'll check for a previously saved state.
-      
+
       To advance the story after some text is shown (or some error is received)
       just hit RETURN.
       To select an option when a choice is presented, press the
       assigned number (0, 1, 2, 3...) and then hit RETURN.
-      
+
       Enjoy!
       """)
 

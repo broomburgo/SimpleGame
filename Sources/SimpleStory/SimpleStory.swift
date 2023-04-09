@@ -3,16 +3,20 @@ import SimpleSetting
 
 public typealias SimpleStory = SimpleSetting
 
+extension SceneType {
+  public typealias Game = SimpleStory
+}
+
 extension SimpleSetting: Story {
-  public static let scenes: [RawScene<SimpleStory>] = [
-    Car.raw,
-    Street.raw,
-    Bookshop.raw,
-    GroceryStore.raw,
-    DarkAlley.raw,
-    LookForHelp.raw,
-    Apartment7.raw,
-  ]
+  public static let scenes: [RawScene<SimpleStory>] = Array([
+    Apartment7.scenes,
+    Bookshop.scenes,
+    [Car.raw],
+    [DarkAlley.raw],
+    GroceryStore.scenes,
+    LookForHelp.scenes,
+    Street.scenes,
+  ].joined())
 }
 
 // MARK: - Generic
@@ -34,7 +38,7 @@ extension SimpleStory.World {
   mutating func didDeduce(_ deduction: Deduction) {
     list["deductions", default: []].append(.init(stringLiteral: deduction.rawValue))
   }
-  
+
   func hasDeduced(_ deduction: Deduction) -> Bool {
     list["deductions", default: []].contains(.init(stringLiteral: deduction.rawValue))
   }
@@ -65,7 +69,7 @@ extension SimpleStory.World {
   mutating func didDiscover(_ place: Place) {
     list["discoveredPlaces", default: []].append(.place(place))
   }
-  
+
   func hasDiscovered(_ place: Place) -> Bool {
     list["discoveredPlaces", default: []].contains(.place(place))
   }
@@ -97,12 +101,12 @@ extension SimpleStory.World {
         if $0 < 5 {
           $0 += 1
         }
-        
+
       case .negative:
         if $0 > 0 {
           $0 -= 1
         }
-        
+
       default:
         break
       }
@@ -110,7 +114,7 @@ extension SimpleStory.World {
   }
 }
 
-func checkMentalHealth<B: Branch>() -> [BranchStep<B>] where B.Parent.Game == SimpleStory {
+func checkMentalHealth<Scene: SceneType>() -> [SceneStep<Scene>] where Scene.Game == SimpleStory {
   group {
     check {
       switch $0.world.mentalHealth {
@@ -119,15 +123,17 @@ func checkMentalHealth<B: Branch>() -> [BranchStep<B>] where B.Parent.Game == Si
           "Suddenly, you feel agitated and paranoid"
           "You're senses are leaving you..."
           "It's like falling asleep..."
-        }.then(.transitionTo(PassedOut.init()))
-        
+        }.then {
+          .transitionTo(PassedOut())
+        }
+
       case 1 where !$0.script.didNarrate(.gotToMentalHealth1):
         tell {
           "You feel confused"
           "It seems like you're sweating"
           "You're hands are shaking a bit".with(id: .gotToMentalHealth1)
         }
-        
+
       case 2 where !$0.script.didNarrate(.gotToMentalHealth2):
         tell {
           "You feel a little disoriented"
@@ -150,26 +156,17 @@ func checkMentalHealth<B: Branch>() -> [BranchStep<B>] where B.Parent.Game == Si
   }
 }
 
-public struct PassedOut: Scene {
-  public typealias Game = SimpleStory
-  
+public struct PassedOut: SceneType {
   public init() {}
-  
-  public static let branches: [RawBranch<SimpleStory>] = [
-    Main.raw
-  ]
-  
-  public enum Main: Branch {
-    @BranchBuilder<Self>
-    public static func getSteps(for _: PassedOut) -> [BranchStep<Self>] {
-      "You fall on the ground"
-      "You're eyes are closing"
-      "With the last light, you see a strange creature in the distance"
-      "It's like it's watching you..."
-      "...watching you..."
-      "..."
-      "..."
-    }
+
+  public var steps: Steps {
+    "You fall on the ground"
+    "You're eyes are closing"
+    "With the last light, you see a strange creature in the distance"
+    "It's like it's watching you..."
+    "...watching you..."
+    "..."
+    "..."
   }
 }
 
@@ -212,14 +209,14 @@ extension SimpleStory.World {
         their: "his",
         them: "him"
       )
-      
+
     case .female?:
       return (
         they: "she",
         their: "her",
         them: "her"
       )
-      
+
     default:
       return (
         they: "they",
@@ -279,7 +276,7 @@ extension SimpleStory.World {
       value["wasTheDoorClosed"] = newValue ? .positive : .negative
     }
   }
-  
+
   var wasTheKeyFound: Bool {
     get {
       value["wasTheKeyFound"] == .positive
@@ -288,7 +285,7 @@ extension SimpleStory.World {
       value["wasTheKeyFound"] = newValue ? .positive : .negative
     }
   }
-  
+
   var wasTheSlimyGooeySubstanceObservedInTheDarkAlley: Bool {
     get {
       value["wasTheSlimyGooeySubstanceObservedInTheDarkAlley"] == .positive

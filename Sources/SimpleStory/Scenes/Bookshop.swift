@@ -1,39 +1,33 @@
 import Narratore
 import SimpleSetting
 
-public struct Bookshop: Scene {
-  public typealias Game = SimpleStory
-  
-  public var status: Status
-  public init(status: Status = .regular) {
-    self.status = status
-  }
-  
-  public enum Status: Codable {
-    case regular
-    case trashed
-  }
-  
-  public static let branches: [RawBranch<SimpleStory>] = [
+public enum Bookshop {
+  public static let scenes: [RawScene<SimpleStory>] = [
     Main.raw,
     ShowPhoto.raw,
     ShowPhotoAgain.raw,
     AboutTheShop.raw,
     TheFeelingShop.raw,
   ]
-  
-  public enum Main: Branch {
-    public enum Anchor {
+
+  public enum Status: Codable {
+    case regular
+    case trashed
+  }
+
+  public struct Main: SceneType {
+    public enum Anchor: Codable & Hashable {
       case askQuestions
     }
-    
-    @BranchBuilder<Self>
-    public static func getSteps(for scene: Bookshop) -> [BranchStep<Self>] {
-      switch scene.status {
+
+    public var status: Status = .regular
+
+    public var steps: Steps {
+      switch status {
       case .regular:
         "The bookshop is barely lit, with some fake candles on the top shelves projecting a faint, shimmering light"
         "There's lots of bookshelves, some full of books, some almost empty"
-                
+
         tell {
           if !$0.script.didNarrate(.didMeetTheOwner) {
             "You don't see people in the store"
@@ -57,32 +51,36 @@ public struct Bookshop: Scene {
             "'Hello?'"
             "'I'm under the desk'"
             "An old man emerges from the desk, behind a pile of books that might or might not be about botanics"
-            
+
             "'Yes?'".with(id: .didMeetTheOwner)
           }
         }
-        
+
         "You take out the photo, and get near the owner"
-        
+
         choose(.askQuestions) {
           if $0.script.didNarrate(.didShowPhotoOnce) {
             "Show photo again".onSelect {
-              "You show the photo to the owner one more time"
-                .then(.runThrough(ShowPhotoAgain.self, scene: scene))
+              "You show the photo to the owner one more time".then {
+                .runThrough(ShowPhotoAgain())
+              }
             }
-              
+
           } else {
             "Show photo".onSelect {
               "You show the photo to the owner"
                 .with(id: .didShowPhotoOnce)
-                .then(.runThrough(ShowPhoto.self, scene: scene))
+                .then {
+                  .runThrough(ShowPhoto())
+                }
             }
           }
-          
+
           if !$0.script.didNarrate(.didWitnessALargerWorld) {
             "Ask about the shop".onSelect {
-              "'How's the shop doing?'"
-                .then(.runThrough(AboutTheShop.self, scene: scene))
+              "'How's the shop doing?'".then {
+                .runThrough(AboutTheShop())
+              }
             }
           }
 
@@ -97,20 +95,21 @@ public struct Bookshop: Scene {
             }
           }
         }
-        
+
         "You think about your next steps"
-        
+
         choose { _ in
           "Ask more questions".onSelect {
-            "Maybe you should ask a few more questions"
-              .then(.replaceWith(Self.self, at: .askQuestions, scene: scene))
+            "Maybe you should ask a few more questions".then {
+              .replaceWith(self, at: .askQuestions)
+            }
           }
-          
+
           "Leave".onSelect {
             "Thank you for your time sir"
           }
         }
-        
+
       case .trashed:
         "The place is a mess"
         "And you don't see the owner"
@@ -122,7 +121,7 @@ public struct Bookshop: Scene {
         "The key holder says 'Apartment 7'".with {
           $0.wasTheKeyFound = true
         }
-        
+
         check {
           if $0.world.hasDiscovered(.apartment7) {
             "It's likely the key to the apartment in that apartment block"
@@ -144,10 +143,9 @@ public struct Bookshop: Scene {
       }
     }
   }
-  
-  public enum ShowPhoto: Branch {
-    @BranchBuilder<Self>
-    public static func getSteps(for scene: Bookshop) -> [BranchStep<Self>] {
+
+  public struct ShowPhoto: SceneType {
+    public var steps: Steps {
       "'Have you seen this person?'"
       "'mmm...'"
       "'Let me take a look...'"
@@ -162,27 +160,27 @@ public struct Bookshop: Scene {
       "Ok, now your arm hurt real bad".with(tags: [.init("You feel pain in your arm")]) {
         $0.decreaseMentalHealth()
       }
-      
+
       checkMentalHealth()
-      
+
       "You lower the photo"
       "'Hey, I was looking at that!'"
       "You feel a sudden urge to punch someone"
       "And you have, in fact, someone in front of you"
       "But you're in the private investigation business for the long run, so you contain the urge"
-      
+
       tell {
         let (they, _, them) = $0.world.targetPersonPronoun
-        
+
         "'I've seen \(them), of course I did, \(they)'s been here many times last week.'"
         "Actually, \(they) needs to return some books"
         "Can you tell \(them) if you see \(them)?"
         "Be a dear..."
       }
-      
+
       "You think about the fact that you're not liking this exchange, it doesn't seem fruitful"
       "The bookshop owner is not really giving you more info that what you could have guessed by the simple fact that your target recently moved to this neighborhood, and was seen with lots of books"
-      
+
       choose {
         let (they, their, _) = $0.world.targetPersonPronoun
 
@@ -212,26 +210,25 @@ public struct Bookshop: Scene {
           }
         }
       }
-      
+
       "'Are you still here?'"
       "The bookshop owner looks at you, slightly puzzled"
       "'I don't have time to lose, you know?"
     }
   }
-  
-  public enum ShowPhotoAgain: Branch {
-    @BranchBuilder<Self>
-    public static func getSteps(for scene: Bookshop) -> [BranchStep<Self>] {
+
+  public struct ShowPhotoAgain: SceneType {
+    public var steps: Steps {
       "'Have you seen this person?'"
       "'Pretty sure you already asked me that.'"
       "'I forgot the answer'"
-      
+
       tell {
         let (they, _, them) = $0.world.targetPersonPronoun
-        
+
         "'There's no answer, and don't know where \(they) is, but if you find \(them), please ask about my books'"
       }
-      
+
       "'What books are we talking about anyway?'"
       "'The kind of books I usually sell.'"
       "'Go on.'"
@@ -241,37 +238,38 @@ public struct Bookshop: Scene {
       "'No I mean...'"
       "'Why don't you go on, on the street outside?'"
       "'I mean, what kind of books do you usually sell?'"
-      
+
       "'Ancient books, about magic, occult rituals, demonic entities, this kind of stuff.'".with {
         $0.didDeduce(.targetIsInterestedInBooksAboutOccultRituals)
       }
-      
+
       "The bookshop owner seems annoyed, like he was taking about the most obvious, mundane thing in the world"
       "Apparently, in this part of town, selling tomes about demonic entities is comparable to selling self-help books"
     }
   }
 
-  public enum AboutTheShop: Branch {
-    @BranchBuilder<Self>
-    public static func getSteps(for scene: Bookshop) -> [BranchStep<Self>] {
+  public struct AboutTheShop: SceneType {
+    public var steps: Steps {
       "'What do you mean?'"
       "'The shop, is doing fine?'"
       "'It's a bookshop, it doesn't feel emotions.'"
-      
+
       check {
         if $0.script.didNarrate(.didThinkAboutTheBookshopFeelings) {
           "(or does it?)"
         }
       }
-      
+
       "You don't really know how to respond to that.."
       "...but you start thinking about what emotions a bookshop would feel if it COULD"
       "..."
       "It would probably feel \"dirty\", given how many people scroll through the pages of random books, before putting them back".with(id: .didThinkAboutTheBookshopFeelings)
-      
+
       check {
         if $0.script.narrated[.didThinkAboutTheBookshopFeelings, default: 0] >= 3 {
-          "...".then(.replaceWith(TheFeelingShop.self, scene: scene))
+          "...".then {
+            .replaceWith(TheFeelingShop())
+          }
         } else {
           tell {
             "Let's discard this thought.."
@@ -282,10 +280,9 @@ public struct Bookshop: Scene {
       }
     }
   }
-  
-  public enum TheFeelingShop: Branch {
-    @BranchBuilder<Self>
-    public static func getSteps(for scene: Bookshop) -> [BranchStep<Self>] {
+
+  public struct TheFeelingShop: SceneType {
+    public var steps: Steps {
       "You really like this idea of a feeling bookshop, don't you?"
       "Let me indulge you"
       "You take a deep breath"

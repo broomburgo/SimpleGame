@@ -1,23 +1,14 @@
 import Narratore
 import SimpleSetting
 
-public struct LookForHelp: Scene {
-  public typealias Game = SimpleStory
-  
-  public var hasInformedAboutTargetDisappearance = false
-  public var hasLiedAboutApartment17 = false
-  public var canAskToBreakDownTheDoor = false
-
-  public init() {}
-
-  public static let branches: [RawBranch<SimpleStory>] = [
+public enum LookForHelp {
+  public static let scenes: [RawScene<SimpleStory>] = [
     Main.raw,
     Conversation.raw,
   ]
 
-  public enum Main: Branch {
-    @BranchBuilder<Self>
-    public static func getSteps(for _: LookForHelp) -> [BranchStep<Self>] {
+  public struct Main: SceneType {
+    public var steps: Steps {
       "You start wandering about the corridors of the ground floor of this building"
       "How should you ask for help?"
       "\"Hi, please help me break into that apartment?\""
@@ -31,15 +22,18 @@ public struct LookForHelp: Scene {
       "He's coming"
       "Here we go"
       "'Hello sir, can you help me?'"
-      then(.replaceWith(Conversation.self, scene: .init()))
+      then { .replaceWith(Conversation()) }
     }
   }
 
-  public enum Conversation: Branch {
+  public struct Conversation: SceneType {
     public typealias Anchor = Int
 
-    @BranchBuilder<Self>
-    public static func getSteps(for scene: LookForHelp) -> [BranchStep<Self>] {
+    public var hasInformedAboutTargetDisappearance = false
+    public var hasLiedAboutApartment17 = false
+    public var canAskToBreakDownTheDoor = false
+
+    public var steps: Steps {
       choose(0) {
         let (they, _, them) = $0.world.targetPersonPronoun
 
@@ -51,9 +45,11 @@ public struct LookForHelp: Scene {
             "'I've never seen you, you live here?'"
             "'...yeah'"
             "'Since when?'"
-          }.then(.replaceWith(Self.self, at: 1, scene: scene))
+          }.then {
+            .replaceWith(self, at: 1)
+          }
         }
-        
+
         "I'm looking for someone".onSelect {
           tell {
             "'I'm looking for someone'"
@@ -62,7 +58,9 @@ public struct LookForHelp: Scene {
             "'Hey, I know \(them)'"
             "'Yes, \(they) live here'"
             "'Are you some kind of stalker?'"
-          }.then(.replaceWith(Self.self, at: 5, scene: scene))
+          }.then {
+            .replaceWith(self, at: 5)
+          }
         }
       }
 
@@ -75,7 +73,9 @@ public struct LookForHelp: Scene {
             "'You \"happened\" yesterday?'"
             "'It's... a joke'"
             "'Didn't get it'"
-          }.then(.replaceWith(Self.self, at: 10, scene: scene))
+          }.then {
+            .replaceWith(self, at: 10)
+          }
         }
 
         "Some time ago".onSelect {
@@ -87,7 +87,9 @@ public struct LookForHelp: Scene {
             "'What?'"
             "You are admittedly confused already"
             "'That you live here'"
-          }.then(.replaceWith(Self.self, at: 2, scene: scene))
+          }.then {
+            .replaceWith(self, at: 2)
+          }
         }
 
         "I don't remember".onSelect {
@@ -96,10 +98,12 @@ public struct LookForHelp: Scene {
             "'You don't remember?'"
             "'I...'"
             "Let's start again"
-          }.then(.replaceWith(Self.self, at: 0, scene: scene))
+          }.then {
+            .replaceWith(self, at: 0)
+          }
         }
       }
-      
+
       choose(2) { _ in
         "But I do live here!".onSelect {
           tell {
@@ -114,9 +118,11 @@ public struct LookForHelp: Scene {
             "'I am sure'"
             "You should've backed off"
             "'Cool, I've seen the tenant yesterday, and it's definitely not you'"
-          }.then(.replaceWith(Self.self, at: 3, scene: scene))
+          }.then {
+            .replaceWith(self, at: 3)
+          }
         }
-        
+
         "You're right, I don't live here".onSelect {
           tell {
             "'You're right, I don't live here'"
@@ -129,10 +135,12 @@ public struct LookForHelp: Scene {
             "'Yes, beat you'"
             "'Why would you do such a thing?'"
             "'Because you tricked me'"
-          }.then(.replaceWith(Self.self, at: 4, scene: scene))
+          }.then {
+            .replaceWith(self, at: 4)
+          }
         }
       }
-      
+
       choose(3) {
         let (_, their, them) = $0.world.targetPersonPronoun
 
@@ -144,21 +152,25 @@ public struct LookForHelp: Scene {
             "'Yes I... wait, you tried to trick me!'"
             "'Who, me?'"
             "'Yes, you'"
-          }.then(.replaceWith(Self.self, at: 4, scene: scene.updating { $0.canAskToBreakDownTheDoor = true }))
+          }.then {
+            .replaceWith(self.updating { $0.canAskToBreakDownTheDoor = true }, at: 4)
+          }
         }
-        
-        if !scene.hasLiedAboutApartment17 {
+
+        if !hasLiedAboutApartment17 {
           "Sorry, I meant apartment 17".onSelect {
             tell {
               "'Sorry, I meant apartment 17'"
               "'You're making it up'"
               "'I'm most certainly not!'"
               "'Ok, I'll bite... and since when have you lived in apartment 17?'"
-            }.then(.replaceWith(Self.self, at: 1, scene: scene.updating { $0.hasLiedAboutApartment17 = true }))
+            }.then {
+              .replaceWith(self.updating { $0.hasLiedAboutApartment17 = true }, at: 1)
+            }
           }
         }
       }
-      
+
       choose(4) {
         let (they, _, _) = $0.world.targetPersonPronoun
 
@@ -171,7 +183,9 @@ public struct LookForHelp: Scene {
             "'The disappearance of this person'"
             "'\(they.capitalized)'s disappeared?'"
             "'Yes sir'"
-          }.then(.replaceWith(Self.self, at: 10, scene: scene.updating { $0.hasInformedAboutTargetDisappearance = true }))
+          }.then {
+            .replaceWith(self.updating { $0.hasInformedAboutTargetDisappearance = true }, at: 10)
+          }
         }
 
         "I'm ashamed of myself".onSelect {
@@ -182,10 +196,12 @@ public struct LookForHelp: Scene {
             "'Don't say that!'"
             "'But it's true'"
             "'What it is that you want exactly?'"
-          }.then(.replaceWith(Self.self, at: 10, scene: scene))
+          }.then {
+            .replaceWith(self, at: 10)
+          }
         }
       }
-      
+
       choose(5) { _ in
         "I'm not \"stalking\" anybody".onSelect {
           tell {
@@ -195,9 +211,11 @@ public struct LookForHelp: Scene {
             "'So, a professional stalker'"
             "'What?'"
             "'You're literally being paid for stalking'"
-          }.then(.replaceWith(Self.self, at: 10, scene: scene))
+          }.then {
+            .replaceWith(self, at: 10)
+          }
         }
-        
+
         "I suppose I am".onSelect {
           tell {
             "'I suppose I am, in a sense'"
@@ -207,22 +225,25 @@ public struct LookForHelp: Scene {
             "'The disappearance of a person'"
             "'Seems serious'"
             "'It is'"
-          }.then(.replaceWith(Self.self, at: 10, scene: scene.updating { $0.canAskToBreakDownTheDoor = true }))
+          }.then {
+            .replaceWith(self.updating { $0.canAskToBreakDownTheDoor = true }, at: 10)
+          }
         }
       }
-      
+
       choose(10) { _ in
         "Forget about it, let's start over".onSelect {
-          "'Forget about it, let's start over'"
-            .then(.replaceWith(Self.self, at: 0, scene: scene))
+          "'Forget about it, let's start over'".then {
+            .replaceWith(self, at: 0)
+          }
         }
 
-        if scene.canAskToBreakDownTheDoor {
+        if canAskToBreakDownTheDoor {
           "Help me break down a door".onSelect {
             tell {
               "'Can you please help me break down a door?'"
 
-              if scene.hasInformedAboutTargetDisappearance {
+              if hasInformedAboutTargetDisappearance {
                 "'The door of that person's apartment?'"
                 "'Yes'"
               }
@@ -238,7 +259,7 @@ public struct LookForHelp: Scene {
           }
         }
       }
-                 
+
       "You go back to the door"
       "'Is this the door?' the guy asks"
       "'Yep'"
@@ -248,7 +269,7 @@ public struct LookForHelp: Scene {
       "'That was fun'"
       "The guy walks away"
       "You enter the apartment"
-      then(.transitionTo(Apartment7.TheApartment.self, scene: .init()))
+      then { .transitionTo(Apartment7.TheApartment()) }
     }
   }
 }

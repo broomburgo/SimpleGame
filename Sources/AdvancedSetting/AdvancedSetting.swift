@@ -106,12 +106,12 @@ public struct LocalizedMessage<Localization: Localizing>: Messaging {
 }
 
 extension String {
-  public func localized<B: Branch, Localization: Localizing>(
-    anchor: B.Anchor? = nil,
-    id: B.Game.Message.ID? = nil,
+  public func localized<Scene: SceneType, Localization: Localizing>(
+    anchor: Scene.Anchor? = nil,
+    id: Scene.Game.Message.ID? = nil,
     values: [String: String] = [:],
     translations: [Localization.Language: String] = [:]
-  ) -> BranchStep<B> where B.Game.Message == LocalizedMessage<Localization> {
+  ) -> SceneStep<Scene> where Scene.Game.Message == LocalizedMessage<Localization> {
     .init(
       anchor: anchor,
       getStep: .init { _ in
