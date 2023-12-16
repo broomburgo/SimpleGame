@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
   name: "SimpleGame",
-  platforms: [.iOS(.v13), .macOS(.v10_15)],
+  platforms: [.iOS(.v13), .macOS(.v13)],
   products: [
     .executable(
       name: "SimpleGame",
@@ -29,7 +29,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(url: "https://github.com/broomburgo/Narratore", branch: "main"),
+    .package(url: "https://github.com/broomburgo/Narratore", exact: "0.2.0"),
   ],
   targets: [
     .executableTarget(

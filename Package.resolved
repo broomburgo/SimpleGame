@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/broomburgo/Narratore",
       "state" : {
-        "branch" : "main",
-        "revision" : "1df8ffdd145307e521c874dfd2ab5b49ef02f6ec"
+        "revision" : "1cb7fd95c6e3ca670c057afcd6c738dcc9527c41",
+        "version" : "0.2.0"
       }
     }
   ],
