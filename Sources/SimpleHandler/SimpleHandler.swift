@@ -138,4 +138,18 @@ extension SimpleHandler: Handler {
       print("ERROR: \(failure)")
     }
   }
+
+  public func answer(request: Player<Game>.TextRequest) async -> Next<Game, Player<Game>.ValidatedText> {
+    guard let text = readLine() else {
+      return .replay
+    }
+
+    switch request.validate(text) {
+    case .valid(let validatedText):
+      return .advance(with: validatedText)
+
+    case .invalid:
+      return .stop
+    }
+  }
 }
