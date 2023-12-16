@@ -140,6 +140,10 @@ extension SimpleHandler: Handler {
   }
 
   public func answer(request: Player<Game>.TextRequest) async -> Next<Game, Player<Game>.ValidatedText> {
+    if let message = request.message {
+      print(message)
+    }
+
     guard let text = readLine() else {
       return .replay
     }
@@ -148,8 +152,11 @@ extension SimpleHandler: Handler {
     case .valid(let validatedText):
       return .advance(with: validatedText)
 
-    case .invalid:
-      return .stop
+    case .invalid(let optionalMessage):
+      if let optionalMessage {
+        print(optionalMessage)
+      }
+      return .replay
     }
   }
 }

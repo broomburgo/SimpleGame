@@ -5,6 +5,21 @@ public struct Car: SceneType {
   public init() {}
 
   public var steps: Steps {
+    requestText {
+      "What's your name?"
+    } validate: { text in
+      if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        .valid(.init(text: text))
+      } else {
+        .invalid("[Invalid input, please retry]")
+      }
+    } ifValid: { _, validated in
+      tell {
+        "\(validated.text)? I like it"
+        "OK, let's start"
+      }
+    }
+
     "You wake up from an unusual dream"
     "You were under the sea, walking on the ground as if there was no pull to the surface, nor any resistance from the water itself"
     "But you were definitely under the sea, fishes and everything, and the light of the sun reflected on the shimmering water surface, creating a dream-like movement"

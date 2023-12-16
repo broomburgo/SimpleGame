@@ -23,13 +23,17 @@ public enum SimpleSetting: Setting {
     }
   }
 
-  public struct Message: Messaging {
+  public struct Message: Messaging & ExpressibleByStringLiteral {
     public var id: ID?
     public var text: String
 
     public init(id: ID?, text: String) {
       self.id = id
       self.text = text
+    }
+
+    public init(stringLiteral value: String) {
+      self.init(id: nil, text: value)
     }
 
     public struct ID: Hashable & Codable & ExpressibleByStringLiteral & CustomStringConvertible {
