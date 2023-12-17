@@ -1,9 +1,17 @@
 import Narratore
 import SimpleSetting
 
-public protocol SettingExtra {
-  associatedtype Attribute: Codable & Hashable
-  associatedtype InventoryItem: Codable & Hashable
+public protocol AdvancedSettingAttribute: Codable & Hashable {
+  associatedtype Value: Codable
+}
+
+public protocol AdvancedSettingInventoryItem: Codable & Hashable {
+  associatedtype Count: Codable
+}
+
+public protocol AdvancedSettingExtra {
+  associatedtype Attribute: AdvancedSettingAttribute
+  associatedtype InventoryItem: AdvancedSettingInventoryItem
   associatedtype CustomWorld: Codable
 }
 
@@ -14,37 +22,31 @@ public protocol Localizing {
   static var translations: [Language: String] { get }
 }
 
-public enum AdvancedSetting<Extra: SettingExtra, Localization: Localizing>: Setting {
-  public typealias Generate = SimpleSetting.Generate
-  public typealias Message = LocalizedMessage<Localization>
-  public typealias Tag = SimpleSetting.Tag
+public struct AdvancedWorld<Extra: AdvancedSettingExtra>: Codable {
+  public var attributes: [Extra.Attribute: Extra.Attribute.Value]
+  public var inventory: [Extra.InventoryItem: Extra.InventoryItem.Count]
+  public var custom: Extra.CustomWorld
 
-  public struct World: Codable {
-    public var attributes: [Extra.Attribute: Int]
-    public var inventory: [Extra.InventoryItem: Int]
-    public var custom: Extra.CustomWorld
-
-    public init(
-      attributes: [Extra.Attribute: Int],
-      inventory: [Extra.InventoryItem: Int],
-      custom: Extra.CustomWorld
-    ) {
-      self.attributes = attributes
-      self.inventory = inventory
-      self.custom = custom
-    }
+  public init(
+    attributes: [Extra.Attribute: Extra.Attribute.Value],
+    inventory: [Extra.InventoryItem: Extra.InventoryItem.Count],
+    custom: Extra.CustomWorld
+  ) {
+    self.attributes = attributes
+    self.inventory = inventory
+    self.custom = custom
   }
 }
 
 public struct LocalizedMessage<Localization: Localizing>: Messaging {
   public var text: String {
-    let templated: String
-    if Localization.current != Localization.base,
-       let translated = Localization.translations[Localization.current]
+    let templated: String =
+      if Localization.current != Localization.base,
+      let translated = Localization.translations[Localization.current]
     {
-      templated = translated
+      translated
     } else {
-      templated = baseText
+      baseText
     }
 
     return values.reduce(templated) {
@@ -77,4 +79,12 @@ public struct LocalizedMessage<Localization: Localizing>: Messaging {
       description = value
     }
   }
+}
+
+public protocol AdvancedSetting: Setting where
+  World == AdvancedWorld<Extra>,
+  Message == LocalizedMessage<Localization>
+{
+  associatedtype Extra: AdvancedSettingExtra
+  associatedtype Localization: Localizing
 }
