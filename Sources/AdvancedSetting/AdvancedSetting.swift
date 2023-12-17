@@ -2,14 +2,16 @@ import Narratore
 import SimpleSetting
 
 public protocol SettingExtra {
-  associatedtype CustomWorld: Codable
+  associatedtype Attribute: Codable & Hashable
   associatedtype InventoryItem: Codable & Hashable
+  associatedtype CustomWorld: Codable
 }
 
 public protocol Localizing {
   associatedtype Language: Hashable & Codable
   static var base: Language { get }
   static var current: Language { get set }
+  static var translations: [Language: String] { get }
 }
 
 public enum AdvancedSetting<Extra: SettingExtra, Localization: Localizing>: Setting {
@@ -18,43 +20,18 @@ public enum AdvancedSetting<Extra: SettingExtra, Localization: Localizing>: Sett
   public typealias Tag = SimpleSetting.Tag
 
   public struct World: Codable {
-    public var attributes: Attributes
-    public var custom: Extra.CustomWorld
+    public var attributes: [Extra.Attribute: Int]
     public var inventory: [Extra.InventoryItem: Int]
+    public var custom: Extra.CustomWorld
 
     public init(
-      attributes: Attributes,
-      custom: Extra.CustomWorld,
-      inventory: [Extra.InventoryItem: Int]
+      attributes: [Extra.Attribute: Int],
+      inventory: [Extra.InventoryItem: Int],
+      custom: Extra.CustomWorld
     ) {
       self.attributes = attributes
-      self.custom = custom
       self.inventory = inventory
-    }
-
-    public struct Attributes: Codable {
-      public var impact: Int
-      public var dexterity: Int
-      public var intelligence: Int
-      public var perception: Int
-      public var charisma: Int
-      public var empathy: Int
-
-      public init(
-        impact: Int,
-        dexterity: Int,
-        intelligence: Int,
-        perception: Int,
-        charisma: Int,
-        empathy: Int
-      ) {
-        self.impact = impact
-        self.dexterity = dexterity
-        self.intelligence = intelligence
-        self.perception = perception
-        self.charisma = charisma
-        self.empathy = empathy
-      }
+      self.custom = custom
     }
   }
 }
@@ -63,7 +40,7 @@ public struct LocalizedMessage<Localization: Localizing>: Messaging {
   public var text: String {
     let templated: String
     if Localization.current != Localization.base,
-       let translated = translations[Localization.current]
+       let translated = Localization.translations[Localization.current]
     {
       templated = translated
     } else {
@@ -77,23 +54,20 @@ public struct LocalizedMessage<Localization: Localizing>: Messaging {
 
   public var id: ID?
   public var baseText: String
-  public var translations: [Localization.Language: String]
   public var values: [String: String]
 
   public init(
     id: ID?,
     baseText: String,
-    translations: [Localization.Language: String],
     values: [String: String]
   ) {
     self.id = id
     self.baseText = baseText
-    self.translations = translations
     self.values = values
   }
 
   public init(id: ID?, text: String) {
-    self.init(id: id, baseText: text, translations: [:], values: [:])
+    self.init(id: id, baseText: text, values: [:])
   }
 
   public struct ID: Hashable, Codable, ExpressibleByStringLiteral, CustomStringConvertible {
@@ -102,34 +76,5 @@ public struct LocalizedMessage<Localization: Localizing>: Messaging {
     public init(stringLiteral value: String) {
       description = value
     }
-  }
-}
-
-extension String {
-  public func localized<Scene: SceneType, Localization: Localizing>(
-    anchor: Scene.Anchor? = nil,
-    id: Scene.Game.Message.ID? = nil,
-    values: [String: String] = [:],
-    translations: [Localization.Language: String] = [:]
-  ) -> SceneStep<Scene> where Scene.Game.Message == LocalizedMessage<Localization> {
-    .init(
-      anchor: anchor,
-      getStep: .init { _ in
-        .init(
-          narration: .init(
-            messages: [
-              .init(
-                id: id,
-                baseText: self,
-                translations: translations,
-                values: values
-              ),
-            ],
-            tags: [],
-            update: nil
-          )
-        )
-      }
-    )
   }
 }
