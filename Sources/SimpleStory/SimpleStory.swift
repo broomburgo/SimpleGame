@@ -120,43 +120,45 @@ extension SimpleStory.World {
   }
 }
 
-func checkMentalHealth<Scene: SceneType>() -> [SceneStep<Scene>] where Scene.Game == SimpleStory {
-  group {
-    check {
-      switch $0.world.mentalHealth {
-      case 0:
-        tell {
-          "Suddenly, you feel agitated and paranoid"
-          "You're senses are leaving you..."
-          "It's like falling asleep..."
-        }.then {
-          .transitionTo(PassedOut())
-        }
+extension SceneType<SimpleStory> {
+  func checkMentalHealth() -> [SceneStep<Self>] {
+    group {
+      check {
+        switch $0.world.mentalHealth {
+        case 0:
+          tell {
+            "Suddenly, you feel agitated and paranoid"
+            "You're senses are leaving you..."
+            "It's like falling asleep..."
+          }.then {
+            .transitionTo(PassedOut())
+          }
 
-      case 1 where !$0.script.didNarrate(.gotToMentalHealth1):
-        tell {
-          "You feel confused"
-          "It seems like you're sweating"
-          "You're hands are shaking a bit".with(id: .gotToMentalHealth1)
-        }
+        case 1 where !$0.script.didNarrate(.gotToMentalHealth1):
+          tell {
+            "You feel confused"
+            "It seems like you're sweating"
+            "You're hands are shaking a bit".with(id: .gotToMentalHealth1)
+          }
 
-      case 2 where !$0.script.didNarrate(.gotToMentalHealth2):
-        tell {
-          "You feel a little disoriented"
-          "It seems like someone is following you"
-          "Or maybe you're being watched"
-          "You can't say, but you better watch you back".with(id: .gotToMentalHealth2)
-        }
+        case 2 where !$0.script.didNarrate(.gotToMentalHealth2):
+          tell {
+            "You feel a little disoriented"
+            "It seems like someone is following you"
+            "Or maybe you're being watched"
+            "You can't say, but you better watch you back".with(id: .gotToMentalHealth2)
+          }
 
-      case 3 where !$0.script.didNarrate(.gotToMentalHealth3):
-        tell {
-          "You feel a little dizzy"
-          "Maybe you're just tired"
-          "Let's hope this case ends soon".with(id: .gotToMentalHealth3)
-        }
+        case 3 where !$0.script.didNarrate(.gotToMentalHealth3):
+          tell {
+            "You feel a little dizzy"
+            "Maybe you're just tired"
+            "Let's hope this case ends soon".with(id: .gotToMentalHealth3)
+          }
 
-      default:
-        skip()
+        default:
+          skip()
+        }
       }
     }
   }
