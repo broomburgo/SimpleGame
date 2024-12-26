@@ -8,7 +8,7 @@ enum LookForHelp {
   ]
 
   struct Main: SceneType {
-    var id = Game.Generate.uniqueString()
+    private var typeName = "\(Self.self)"
 
     var steps: Steps {
       "You start wandering about the corridors of the ground floor of this building"
@@ -29,8 +29,6 @@ enum LookForHelp {
   }
 
   struct Conversation: SceneType {
-    var id = Game.Generate.uniqueString()
-
     typealias Anchor = Int
 
     var hasInformedAboutTargetDisappearance = false
@@ -157,7 +155,7 @@ enum LookForHelp {
             "'Who, me?'"
             "'Yes, you'"
           }.then {
-            .replaceWith(self.updating { $0.canAskToBreakDownTheDoor = true }, at: 4)
+            .replaceWith(updating { $0.canAskToBreakDownTheDoor = true }, at: 4)
           }
         }
 
@@ -169,7 +167,7 @@ enum LookForHelp {
               "'I'm most certainly not!'"
               "'Ok, I'll bite... and since when have you lived in apartment 17?'"
             }.then {
-              .replaceWith(self.updating { $0.hasLiedAboutApartment17 = true }, at: 1)
+              .replaceWith(updating { $0.hasLiedAboutApartment17 = true }, at: 1)
             }
           }
         }
@@ -188,7 +186,7 @@ enum LookForHelp {
             "'\(they.capitalized)'s disappeared?'"
             "'Yes sir'"
           }.then {
-            .replaceWith(self.updating { $0.hasInformedAboutTargetDisappearance = true }, at: 10)
+            .replaceWith(updating { $0.hasInformedAboutTargetDisappearance = true }, at: 10)
           }
         }
 
@@ -230,7 +228,7 @@ enum LookForHelp {
             "'Seems serious'"
             "'It is'"
           }.then {
-            .replaceWith(self.updating { $0.canAskToBreakDownTheDoor = true }, at: 10)
+            .replaceWith(updating { $0.canAskToBreakDownTheDoor = true }, at: 10)
           }
         }
       }

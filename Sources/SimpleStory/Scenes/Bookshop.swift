@@ -16,8 +16,6 @@ enum Bookshop {
   }
 
   struct Main: SceneType {
-    var id = Game.Generate.uniqueString()
-
     enum Anchor: Codable & Hashable {
       case askQuestions
     }
@@ -147,7 +145,7 @@ enum Bookshop {
   }
 
   struct ShowPhoto: SceneType {
-    var id = Game.Generate.uniqueString()
+    private var typeName = "\(Self.self)"
 
     var steps: Steps {
       "'Have you seen this person?'"
@@ -222,7 +220,7 @@ enum Bookshop {
   }
 
   struct ShowPhotoAgain: SceneType {
-    var id = Game.Generate.uniqueString()
+    private var typeName = "\(Self.self)"
 
     var steps: Steps {
       "'Have you seen this person?'"
@@ -255,7 +253,7 @@ enum Bookshop {
   }
 
   struct AboutTheShop: SceneType {
-    var id = Game.Generate.uniqueString()
+    private var typeName = "\(Self.self)"
 
     var steps: Steps {
       "'What do you mean?'"
@@ -290,7 +288,7 @@ enum Bookshop {
   }
 
   struct TheFeelingShop: SceneType {
-    var id = Game.Generate.uniqueString()
+    private var typeName = "\(Self.self)"
 
     var steps: Steps {
       "You really like this idea of a feeling bookshop, don't you?"

@@ -2,8 +2,6 @@ import Narratore
 import SimpleSetting
 
 struct DarkAlley: SceneType {
-  var id = Game.Generate.uniqueString()
-
   private let shouldHearBookshopTrashing: Bool
 
   init(world: Game.World) {

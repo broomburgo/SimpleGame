@@ -8,8 +8,6 @@ enum Apartment7 {
   ]
 
   struct Main: SceneType {
-    var id = Game.Generate.uniqueString()
-
     enum Anchor: Codable, Hashable, Sendable {
       case atTheDoor
     }
@@ -53,7 +51,7 @@ enum Apartment7 {
               "You try break down the door with a push"
               "The door doesn't bulge"
             }.then {
-              .replaceWith(self.updating { $0.breakTheDoorCounter = 1 }, at: .atTheDoor)
+              .replaceWith(updating { $0.breakTheDoorCounter = 1 }, at: .atTheDoor)
             }
           }
 
@@ -63,7 +61,7 @@ enum Apartment7 {
               "You try again"
               "You're pushing as hard as you can, but your \"build\" is not exactly one of a door-breaker"
             }.then {
-              .replaceWith(self.updating { $0.breakTheDoorCounter = 2 }, at: .atTheDoor)
+              .replaceWith(updating { $0.breakTheDoorCounter = 2 }, at: .atTheDoor)
             }
           }
 
@@ -74,7 +72,7 @@ enum Apartment7 {
               "It almost feels like the door is made of granite"
               "But it's more likely that you're body is made of jelly"
             }.then {
-              .replaceWith(self.updating { $0.breakTheDoorCounter = 3 }, at: .atTheDoor)
+              .replaceWith(updating { $0.breakTheDoorCounter = 3 }, at: .atTheDoor)
             }
           }
 
@@ -99,7 +97,7 @@ enum Apartment7 {
   }
 
   struct TheApartment: SceneType {
-    var id = Game.Generate.uniqueString()
+    private var typeName = "\(Self.self)"
 
     var steps: Steps {
       "It's really dark, the windows are shut, and the lights don't work"

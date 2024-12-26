@@ -2,9 +2,7 @@ import Narratore
 import SimpleSetting
 
 struct Car: SceneType {
-  var id = Game.Generate.uniqueString()
-
-  init() {}
+  private var typeName = "\(Self.self)"
 
   var steps: Steps {
     requestText {

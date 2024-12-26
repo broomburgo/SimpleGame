@@ -10,8 +10,6 @@ enum GroceryStore {
   ]
 
   struct Main: SceneType {
-    var id = Game.Generate.uniqueString()
-
     enum Anchor: Codable & Hashable {
       case whatToDo
     }
@@ -71,8 +69,6 @@ enum GroceryStore {
   }
 
   struct LookAround: SceneType {
-    var id = Game.Generate.uniqueString()
-
     var main: Main
 
     var steps: Steps {
@@ -95,8 +91,6 @@ enum GroceryStore {
   }
 
   struct AskAboutTheTarget: SceneType {
-    var id = Game.Generate.uniqueString()
-
     var main: Main
 
     var steps: Steps {
@@ -188,7 +182,7 @@ enum GroceryStore {
   }
 
   struct AskAboutTheBeans: SceneType {
-    var id = Game.Generate.uniqueString()
+    private var typeName = "\(Self.self)"
 
     var steps: Steps {
       "'I'm not sure, maybe yes'"

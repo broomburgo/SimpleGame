@@ -8,7 +8,7 @@ enum Street {
   ]
 
   struct Main: SceneType {
-    var id = Game.Generate.uniqueString()
+    private var typeName = "\(Self.self)"
 
     var steps: Steps {
       "It's a rainy evening, and the street is almost empty"
@@ -74,7 +74,7 @@ enum Street {
   }
 
   struct LookingAround: SceneType {
-    var id = Game.Generate.uniqueString()
+    private var typeName = "\(Self.self)"
 
     enum Anchor: Codable, Hashable, Sendable {
       case backInStreet

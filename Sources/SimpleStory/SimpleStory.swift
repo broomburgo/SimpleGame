@@ -165,9 +165,7 @@ extension SceneType<SimpleStory> {
 }
 
 struct PassedOut: SceneType {
-  var id = Game.Generate.uniqueString()
-
-  init() {}
+  private var typeName = "\(Self.self)"
 
   var steps: Steps {
     "You fall on the ground"
@@ -214,21 +212,21 @@ extension SimpleStory.World {
   var targetPersonPronoun: (they: String, their: String, them: String) {
     switch value[.targetPersonSex] {
     case .male?:
-      return (
+      (
         they: "he",
         their: "his",
         them: "him"
       )
 
     case .female?:
-      return (
+      (
         they: "she",
         their: "her",
         them: "her"
       )
 
     default:
-      return (
+      (
         they: "they",
         their: "their",
         them: "them"
