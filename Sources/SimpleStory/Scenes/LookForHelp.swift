@@ -1,14 +1,16 @@
 import Narratore
 import SimpleSetting
 
-public enum LookForHelp {
-  public static let scenes: [RawScene<SimpleStory>] = [
+enum LookForHelp {
+  static let scenes: [RawScene<SimpleStory>] = [
     Main.raw,
     Conversation.raw,
   ]
 
-  public struct Main: SceneType {
-    public var steps: Steps {
+  struct Main: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    var steps: Steps {
       "You start wandering about the corridors of the ground floor of this building"
       "How should you ask for help?"
       "\"Hi, please help me break into that apartment?\""
@@ -26,14 +28,16 @@ public enum LookForHelp {
     }
   }
 
-  public struct Conversation: SceneType {
-    public typealias Anchor = Int
+  struct Conversation: SceneType {
+    var id = Game.Generate.uniqueString()
 
-    public var hasInformedAboutTargetDisappearance = false
-    public var hasLiedAboutApartment17 = false
-    public var canAskToBreakDownTheDoor = false
+    typealias Anchor = Int
 
-    public var steps: Steps {
+    var hasInformedAboutTargetDisappearance = false
+    var hasLiedAboutApartment17 = false
+    var canAskToBreakDownTheDoor = false
+
+    var steps: Steps {
       choose(0) {
         let (they, _, them) = $0.world.targetPersonPronoun
 

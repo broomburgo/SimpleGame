@@ -1,14 +1,16 @@
 import Narratore
 import SimpleSetting
 
-public struct DarkAlley: SceneType {
+struct DarkAlley: SceneType {
+  var id = Game.Generate.uniqueString()
+
   private let shouldHearBookshopTrashing: Bool
 
-  public init(world: Game.World) {
+  init(world: Game.World) {
     shouldHearBookshopTrashing = !world.wasTheBookshopTrashed
   }
 
-  public var steps: Steps {
+  var steps: Steps {
     if !shouldHearBookshopTrashing {
       "Same dark alley as before"
       "Nothing more to see here"

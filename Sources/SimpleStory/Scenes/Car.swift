@@ -1,10 +1,12 @@
 import Narratore
 import SimpleSetting
 
-public struct Car: SceneType {
-  public init() {}
+struct Car: SceneType {
+  var id = Game.Generate.uniqueString()
 
-  public var steps: Steps {
+  init() {}
+
+  var steps: Steps {
     requestText {
       "What's your name?"
     } validate: { text in

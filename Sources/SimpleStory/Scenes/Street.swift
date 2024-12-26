@@ -1,14 +1,16 @@
 import Narratore
 import SimpleSetting
 
-public enum Street {
-  public static let scenes: [RawScene<SimpleStory>] = [
+enum Street {
+  static let scenes: [RawScene<SimpleStory>] = [
     Main.raw,
     LookingAround.raw,
   ]
 
-  public struct Main: SceneType {
-    public var steps: Steps {
+  struct Main: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    var steps: Steps {
       "It's a rainy evening, and the street is almost empty"
       "Few people live in this part of town. This is one of those neighborhoods that, while not exactly bad per se, has a fame of being inhabited by 'weird' people"
       "You can say that it even attracts people that think of themselves as 'weird'"
@@ -71,12 +73,14 @@ public enum Street {
     }
   }
 
-  public struct LookingAround: SceneType {
-    public enum Anchor: Codable & Hashable {
+  struct LookingAround: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    enum Anchor: Codable, Hashable, Sendable {
       case backInStreet
     }
 
-    public var steps: Steps {
+    var steps: Steps {
       "The rain is thin but persistent"
 
       update {

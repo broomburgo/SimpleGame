@@ -3,11 +3,17 @@ import SimpleSetting
 
 public typealias SimpleStory = SimpleSetting
 
-extension SceneType {
-  public typealias Game = SimpleStory
+extension SimpleStory {
+  public static func initialScene() -> some SceneType<Self> {
+    Car()
+  }
 }
 
-extension SimpleSetting: Story {
+extension SceneType {
+  typealias Game = SimpleStory
+}
+
+extension SimpleStory: Story {
   public static let scenes: [RawScene<SimpleStory>] = Array([
     Apartment7.scenes,
     Bookshop.scenes,
@@ -28,7 +34,7 @@ extension SimpleStory.World.Value {
 
 // MARK: - Deductions
 
-public enum Deduction: String, Codable, CaseIterable {
+enum Deduction: String, Codable, CaseIterable {
   case targetMovedToNeighborhoodBecauseOfBookshop
   case targetIsInterestedInBooksAboutOccultRituals
   case targetIsFeedingSomething
@@ -46,7 +52,7 @@ extension SimpleStory.World {
 
 // MARK: - DiscoveredPlaces
 
-public enum Place: String, Codable {
+enum Place: String, Codable {
   case bookshop
   case groceryStore
   case darkAlley
@@ -156,10 +162,12 @@ func checkMentalHealth<Scene: SceneType>() -> [SceneStep<Scene>] where Scene.Gam
   }
 }
 
-public struct PassedOut: SceneType {
-  public init() {}
+struct PassedOut: SceneType {
+  var id = Game.Generate.uniqueString()
 
-  public var steps: Steps {
+  init() {}
+
+  var steps: Steps {
     "You fall on the ground"
     "You're eyes are closing"
     "With the last light, you see a strange creature in the distance"

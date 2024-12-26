@@ -1,20 +1,22 @@
 import Narratore
 import SimpleSetting
 
-public enum Apartment7 {
-  public static let scenes: [RawScene<SimpleStory>] = [
+enum Apartment7 {
+  static let scenes: [RawScene<SimpleStory>] = [
     Main.raw,
     TheApartment.raw,
   ]
 
-  public struct Main: SceneType {
-    public enum Anchor: Codable & Hashable {
+  struct Main: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    enum Anchor: Codable, Hashable, Sendable {
       case atTheDoor
     }
 
     var breakTheDoorCounter: Int = 0
 
-    public var steps: Steps {
+    var steps: Steps {
       "You get to apartment 7"
 
       tell {
@@ -96,8 +98,10 @@ public enum Apartment7 {
     }
   }
 
-  public struct TheApartment: SceneType {
-    public var steps: Steps {
+  struct TheApartment: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    var steps: Steps {
       "It's really dark, the windows are shut, and the lights don't work"
       "You activate the flashlight on your smartphone, but the battery is almost dead, it's not going to last long"
       "You ask if someone is there, with a voice loud enough to be clearly heard within the apartment, but not so that would disturb the neighbors"

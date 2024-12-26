@@ -1,8 +1,8 @@
 import Narratore
 import SimpleSetting
 
-public enum Bookshop {
-  public static let scenes: [RawScene<SimpleStory>] = [
+enum Bookshop {
+  static let scenes: [RawScene<SimpleStory>] = [
     Main.raw,
     ShowPhoto.raw,
     ShowPhotoAgain.raw,
@@ -10,19 +10,21 @@ public enum Bookshop {
     TheFeelingShop.raw,
   ]
 
-  public enum Status: Codable {
+  enum Status: Codable {
     case regular
     case trashed
   }
 
-  public struct Main: SceneType {
-    public enum Anchor: Codable & Hashable {
+  struct Main: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    enum Anchor: Codable & Hashable {
       case askQuestions
     }
 
-    public var status: Status = .regular
+    var status: Status = .regular
 
-    public var steps: Steps {
+    var steps: Steps {
       switch status {
       case .regular:
         "The bookshop is barely lit, with some fake candles on the top shelves projecting a faint, shimmering light"
@@ -144,8 +146,10 @@ public enum Bookshop {
     }
   }
 
-  public struct ShowPhoto: SceneType {
-    public var steps: Steps {
+  struct ShowPhoto: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    var steps: Steps {
       "'Have you seen this person?'"
       "'mmm...'"
       "'Let me take a look...'"
@@ -217,8 +221,10 @@ public enum Bookshop {
     }
   }
 
-  public struct ShowPhotoAgain: SceneType {
-    public var steps: Steps {
+  struct ShowPhotoAgain: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    var steps: Steps {
       "'Have you seen this person?'"
       "'Pretty sure you already asked me that.'"
       "'I forgot the answer'"
@@ -248,8 +254,10 @@ public enum Bookshop {
     }
   }
 
-  public struct AboutTheShop: SceneType {
-    public var steps: Steps {
+  struct AboutTheShop: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    var steps: Steps {
       "'What do you mean?'"
       "'The shop, is doing fine?'"
       "'It's a bookshop, it doesn't feel emotions.'"
@@ -281,8 +289,10 @@ public enum Bookshop {
     }
   }
 
-  public struct TheFeelingShop: SceneType {
-    public var steps: Steps {
+  struct TheFeelingShop: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    var steps: Steps {
       "You really like this idea of a feeling bookshop, don't you?"
       "Let me indulge you"
       "You take a deep breath"

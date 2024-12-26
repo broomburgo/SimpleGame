@@ -1,24 +1,26 @@
 import Narratore
 import SimpleSetting
 
-public enum GroceryStore {
-  public static let scenes: [RawScene<SimpleStory>] = [
+enum GroceryStore {
+  static let scenes: [RawScene<SimpleStory>] = [
     Main.raw,
     LookAround.raw,
     AskAboutTheTarget.raw,
     AskAboutTheBeans.raw,
   ]
 
-  public struct Main: SceneType {
-    public enum Anchor: Codable & Hashable {
+  struct Main: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    enum Anchor: Codable & Hashable {
       case whatToDo
     }
 
-    public var didLookAroundOnce: Bool = false
-    public var didNoticeMissingBeans: Bool = false
-    public var didAskAboutTheTarget: Bool = false
+    var didLookAroundOnce: Bool = false
+    var didNoticeMissingBeans: Bool = false
+    var didAskAboutTheTarget: Bool = false
 
-    public var steps: Steps {
+    var steps: Steps {
       "A simple, well lit grocery store"
       "There's an old woman at the checkout, but no customers around"
       "The woman appears to be reading a magazine"
@@ -68,10 +70,12 @@ public enum GroceryStore {
     }
   }
 
-  public struct LookAround: SceneType {
-    public var main: Main
+  struct LookAround: SceneType {
+    var id = Game.Generate.uniqueString()
 
-    public var steps: Steps {
+    var main: Main
+
+    var steps: Steps {
       "It's a regular grocery store"
       "Nothing much to say"
       "The target likely purchased some stuff here"
@@ -90,10 +94,12 @@ public enum GroceryStore {
     }
   }
 
-  public struct AskAboutTheTarget: SceneType {
-    public var main: Main
+  struct AskAboutTheTarget: SceneType {
+    var id = Game.Generate.uniqueString()
 
-    public var steps: Steps {
+    var main: Main
+
+    var steps: Steps {
       "'Excuse me ma'am, can you ask you some questions?'"
       "'Of course dear'"
       "'Did you see...'"
@@ -181,8 +187,10 @@ public enum GroceryStore {
     }
   }
 
-  public struct AskAboutTheBeans: SceneType {
-    public var steps: Steps {
+  struct AskAboutTheBeans: SceneType {
+    var id = Game.Generate.uniqueString()
+
+    var steps: Steps {
       "'I'm not sure, maybe yes'"
       "'But you know what? Something strange happened a couple of days ago, when she bought so many beans that she needed a shopping cart to carry them, a cart that she brought herself here'"
       "'What happened'"

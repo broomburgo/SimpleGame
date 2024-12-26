@@ -2,24 +2,24 @@ import Narratore
 import SimpleSetting
 
 /// Describes the attributes of the player character (like "vigor" and "wisdom".
-public protocol AdvancedSettingAttribute: Codable & Hashable {
-  associatedtype Value: Codable
+public protocol AdvancedSettingAttribute: Codable, Hashable, Sendable {
+  associatedtype Value: Codable & Sendable
 }
 
 /// Describes the possible inventory items.
-public protocol AdvancedSettingInventoryItem: Codable & Hashable {
-  associatedtype Count: Codable
+public protocol AdvancedSettingInventoryItem: Codable, Hashable, Sendable {
+  associatedtype Count: Codable & Sendable
 }
 
 /// Adds extra concepts to the `Setting`.
-public protocol AdvancedSettingExtra {
+public protocol AdvancedSettingExtra: Sendable {
   associatedtype Attribute: AdvancedSettingAttribute
   associatedtype InventoryItem: AdvancedSettingInventoryItem
-  associatedtype CustomWorld: Codable
+  associatedtype CustomWorld: Codable & Sendable
 }
 
 /// A `World` type that includes the `Extra` concepts.
-public struct AdvancedWorld<Extra: AdvancedSettingExtra>: Codable {
+public struct AdvancedWorld<Extra: AdvancedSettingExtra>: Codable, Sendable {
   public var attributes: [Extra.Attribute: Extra.Attribute.Value]
   public var inventory: [Extra.InventoryItem: Extra.InventoryItem.Count]
   public var custom: Extra.CustomWorld
@@ -82,7 +82,7 @@ public struct LocalizedMessage<Localization: Localizing>: Messaging {
     self.init(id: id, baseText: text, templateValues: [:])
   }
 
-  public struct ID: Hashable, Codable, ExpressibleByStringLiteral, CustomStringConvertible {
+  public struct ID: Hashable, Codable, Sendable, ExpressibleByStringLiteral, CustomStringConvertible {
     public var description: String
 
     public init(stringLiteral value: String) {
@@ -114,7 +114,7 @@ public enum MyAdvancedSetting: AdvancedSetting {
         self.name = name
       }
 
-      public enum Value: Codable {
+      public enum Value: Codable, Sendable {
         case weak
         case fair
         case strong
@@ -135,7 +135,7 @@ public enum MyAdvancedSetting: AdvancedSetting {
   }
 
   public enum Localization: Localizing {
-    public enum Language: Hashable & Codable {
+    public enum Language: Hashable, Codable, Sendable {
       case english
       case italian
     }
@@ -162,7 +162,7 @@ public enum MyAdvancedSetting: AdvancedSetting {
 
 private enum Current {
   /// The current selected language.
-  static var language: MyAdvancedSetting.Localization.Language = .english
+  nonisolated(unsafe) static var language: MyAdvancedSetting.Localization.Language = .english
 
   /// Translations will go here, and could be generated from a file.
   static let translations: [String: [MyAdvancedSetting.Localization.Language: String]] = [

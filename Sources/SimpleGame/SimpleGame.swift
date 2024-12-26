@@ -12,7 +12,7 @@ enum Main {
       handler: handler,
       status: handler.askToRestoreStatusIfPossible() ?? .init(
         world: .init(),
-        scene: Car()
+        scene: SimpleStory.initialScene()
       )
     )
 
