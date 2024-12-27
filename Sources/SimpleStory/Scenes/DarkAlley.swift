@@ -18,8 +18,8 @@ struct DarkAlley: SceneType {
       "Garbage bins, here and there"
 
       check {
-        if $0.world.theCreatureLookedLike == .aDarkShadow {
-          tell {
+        .inCase($0.world.theCreatureLookedLike == .aDarkShadow) {
+          .tell {
             "The only thing that could lurk here is the shadow that you were dreaming about"
             "But that was just a dream"
             "..."
@@ -29,16 +29,18 @@ struct DarkAlley: SceneType {
       }
 
       check {
-        if $0.world.theCreatureLookedLike == .aDarkShadow {
-          choose {
+        .inCase($0.world.theCreatureLookedLike == .aDarkShadow) {
+          .choose {
             "It was just a dream".onSelect {
-              "Yes, it was".with {
+              .tell {
+                "Yes, it was"
+              } update: {
                 $0.increaseMentalHealth()
               }
             }
 
             "Maybe... not?".onSelect {
-              tell {
+              .tell {
                 "Maybe not"
                 "These thoughts are not helping..."
               } update: {
@@ -57,7 +59,7 @@ struct DarkAlley: SceneType {
 
       choose {
         "I bet there's a corpse underneath".onSelect {
-          tell {
+          .tell {
             "There must be a corpse underneath"
             "You're a private investigator, this is an investigation, and you're in a dark alley"
             "A corpse must be involved in this".with(id: .didSpeculatedAboutTheCorpse)
@@ -66,7 +68,7 @@ struct DarkAlley: SceneType {
 
         if $0.world.theCreatureLookedLike == .anAlienBeing {
           "Maybe that alien that I was dreaming about".onSelect {
-            tell {
+            .tell {
               "Maybe that alien"
               "You dreamed about it, it must mean something"
               "Or alternatively..."
@@ -76,15 +78,19 @@ struct DarkAlley: SceneType {
         }
 
         "Let's not linger and move the boxes".onSelect {
-          "Maybe it's the investigator 6th sense"
+          .tell {
+            "Maybe it's the investigator 6th sense"
+          }
         }
       }
 
       "You move the cardboard boxes"
 
       check {
-        if $0.script.didNarrate(.didSpeculatedAboutTheCorpse) {
-          "Of course there's no corpse underneath"
+        .inCase($0.script.didNarrate(.didSpeculatedAboutTheCorpse)) {
+          .tell {
+            "Of course there's no corpse underneath"
+          }
         }
       }
 
@@ -97,14 +103,18 @@ struct DarkAlley: SceneType {
       "The grocery store owner told that the person that you're looking for seemed to be dumping here a bunch of bean cans"
 
       check {
-        "Maybe \($0.world.targetPersonPronoun.they) dumped that in this hole?"
+        let pronoun = $0.world.targetPersonPronoun.they
+
+        return .tell {
+          "Maybe \(pronoun) dumped that in this hole?"
+        }
       }
 
       choose {
         let (they, their, them) = $0.world.targetPersonPronoun
 
         "\(they.capitalized) must be \"feeding\" something".onSelect {
-          tell {
+          .tell {
             "\(they.capitalized) must be \"feeding\" something"
             "And whatever it is, it must be close"
           } update: {
@@ -113,7 +123,7 @@ struct DarkAlley: SceneType {
         }
 
         "\(they.capitalized) really hates beans".onSelect {
-          tell {
+          .tell {
             "\(they.capitalized) really hates beans"
             "And \(they) wants to devoid the world of them"
             "You can almost hear \(them): 'away with those goddamn beans'"
@@ -121,7 +131,7 @@ struct DarkAlley: SceneType {
         }
 
         "\(they.capitalized) is nuts".onSelect {
-          tell {
+          .tell {
             "\(they.capitalized) is nuts"
             "It's simple"
             "You need to ask more money to \(their) parents"

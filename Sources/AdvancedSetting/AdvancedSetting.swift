@@ -40,7 +40,7 @@ public protocol Localizing {
   associatedtype Language: Hashable & Codable
   static var base: Language { get }
   static var current: Language { get set }
-  static var translations: [String: [Language : String]]  { get }
+  static var translations: [String: [Language: String]] { get }
 }
 
 /// A type of `Message` that uses `Localization` to provide a localized text, based the `base: Language` text, and `templateValues` (if needed).
@@ -52,12 +52,11 @@ public struct LocalizedMessage<Localization: Localizing>: Messaging {
 
     let templated: String =
       if Localization.current != Localization.base,
-      let translated = Localization.translations[baseText]?[Localization.current]
-    {
-      translated
-    } else {
-      baseText
-    }
+      let translated = Localization.translations[baseText]?[Localization.current] {
+        translated
+      } else {
+        baseText
+      }
 
     return templateValues.reduce(templated) {
       $0.replacingOccurrences(of: $1.key, with: $1.value)
@@ -94,8 +93,7 @@ public struct LocalizedMessage<Localization: Localizing>: Messaging {
 /// A `Setting` that includes extra concepts, and message localization.
 public protocol AdvancedSetting: Setting where
   World == AdvancedWorld<Extra>,
-  Message == LocalizedMessage<Localization>
-{
+  Message == LocalizedMessage<Localization> {
   associatedtype Extra: AdvancedSettingExtra
   associatedtype Localization: Localizing
 }
@@ -151,7 +149,7 @@ public enum MyAdvancedSetting: AdvancedSetting {
       }
     }
 
-    public static var translations: [String: [Language : String]] {
+    public static var translations: [String: [Language: String]] {
       Current.translations
     }
   }
@@ -167,7 +165,7 @@ private enum Current {
   /// Translations will go here, and could be generated from a file.
   static let translations: [String: [MyAdvancedSetting.Localization.Language: String]] = [
     "Good morning, %PC_NAME%!": [
-      .italian: "Buongiorno, %PC_NAME%!"
-    ]
+      .italian: "Buongiorno, %PC_NAME%!",
+    ],
   ]
 }

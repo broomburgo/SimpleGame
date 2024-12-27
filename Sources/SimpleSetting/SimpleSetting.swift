@@ -64,7 +64,7 @@ public enum SimpleSetting: Setting {
     public nonisolated(unsafe) static var getFixedUniqueString: (() -> String)? = nil
 
     public static func randomRatio() -> Double {
-      getFixedRandomRatio?() ?? Double((0 ... 1000).randomElement()!) / 1000
+      getFixedRandomRatio?() ?? Double((0...1000).randomElement()!) / 1000
     }
 
     public static func uniqueString() -> String {

@@ -61,31 +61,34 @@ enum Bookshop {
         choose(.askQuestions) {
           if $0.script.didNarrate(.didShowPhotoOnce) {
             "Show photo again".onSelect {
-              "You show the photo to the owner one more time".then {
+              .tell {
+                "You show the photo to the owner one more time"
+              } then: {
                 .runThrough(ShowPhotoAgain())
               }
             }
-
           } else {
             "Show photo".onSelect {
-              "You show the photo to the owner"
-                .with(id: .didShowPhotoOnce)
-                .then {
-                  .runThrough(ShowPhoto())
-                }
+              .tell {
+                "You show the photo to the owner".with(id: .didShowPhotoOnce)
+              } then: {
+                .runThrough(ShowPhoto())
+              }
             }
           }
 
           if !$0.script.didNarrate(.didWitnessALargerWorld) {
             "Ask about the shop".onSelect {
-              "'How's the shop doing?'".then {
+              .tell {
+                "'How's the shop doing?'"
+              } then: {
                 .runThrough(AboutTheShop())
               }
             }
           }
 
           "Ask about the neighborhood".onSelect {
-            tell {
+            .tell {
               "'Is this a good neighborhood?'"
               "'It is, a guess.'"
               "You're mildly surprised by the straightforward answer"
@@ -100,13 +103,17 @@ enum Bookshop {
 
         choose { _ in
           "Ask more questions".onSelect {
-            "Maybe you should ask a few more questions".then {
+            .tell {
+              "Maybe you should ask a few more questions"
+            } then: {
               .replaceWith(self, at: .askQuestions)
             }
           }
 
           "Leave".onSelect {
-            "Thank you for your time sir"
+            .tell {
+              "Thank you for your time sir"
+            }
           }
         }
 
@@ -124,9 +131,11 @@ enum Bookshop {
 
         check {
           if $0.world.hasDiscovered(.apartment7) {
-            "It's likely the key to the apartment in that apartment block"
+            .tell {
+              "It's likely the key to the apartment in that apartment block"
+            }
           } else {
-            tell {
+            .tell {
               "You did notice an apartment block, next to the grocery store"
               "You should go take a look"
             } update: {
@@ -136,8 +145,10 @@ enum Bookshop {
         }
 
         check {
-          if $0.world.wasTheDoorClosed {
-            "The door was closed, but now you have a key to enter"
+          .inCase($0.world.wasTheDoorClosed) {
+            .tell {
+              "The door was closed, but now you have a key to enter"
+            }
           }
         }
       }
@@ -187,7 +198,7 @@ enum Bookshop {
         let (they, their, _) = $0.world.targetPersonPronoun
 
         "\(they.capitalized) wanted a place off the beaten path, to hide \(their) books".onSelect {
-          tell {
+          .tell {
             "\(they.capitalized) wanted a place off the beaten path, to hide \(their) books"
             "The fact that a bookshop is here is a coincidence"
             "This conversation isn't going anywhere"
@@ -195,7 +206,7 @@ enum Bookshop {
         }
 
         "\(they.capitalized) intends to sell the books to the bookshop".onSelect {
-          tell {
+          .tell {
             "\(they.capitalized) intends to sell to books to the bookshop"
             "And \(they)'s borrowing some books, to befriend the bookshop owner"
             "It must be it"
@@ -203,7 +214,7 @@ enum Bookshop {
         }
 
         "\(they.capitalized) wanted to buy some books that only this shop sells".onSelect {
-          tell {
+          .tell {
             "\(they.capitalized) wanted to buy some books that only this shop sells"
             "This is probably the reason why \(they) moved here in the first place"
             "The bookshop is the key"
@@ -261,8 +272,10 @@ enum Bookshop {
       "'It's a bookshop, it doesn't feel emotions.'"
 
       check {
-        if $0.script.didNarrate(.didThinkAboutTheBookshopFeelings) {
-          "(or does it?)"
+        .inCase($0.script.didNarrate(.didThinkAboutTheBookshopFeelings)) {
+          .tell {
+            "(or does it?)"
+          }
         }
       }
 
@@ -273,11 +286,13 @@ enum Bookshop {
 
       check {
         if $0.script.narrated[.didThinkAboutTheBookshopFeelings, default: 0] >= 3 {
-          "...".then {
+          .tell {
+            "..."
+          } then: {
             .replaceWith(TheFeelingShop())
           }
         } else {
-          tell {
+          .tell {
             "Let's discard this thought.."
             "..."
             "...for now"

@@ -34,11 +34,11 @@ enum Apartment7 {
       choose(.atTheDoor) {
         if $0.world.wasTheKeyFound {
           "Open the door with the key".onSelect {
-            tell {
+            .tell {
               "You put the key in the locket and turn it counterclockwise"
               "The door unlocks"
               "You feel happy, and enter the apartment"
-            }.then {
+            } then: {
               .transitionTo(TheApartment())
             }
           }
@@ -47,50 +47,52 @@ enum Apartment7 {
         switch breakTheDoorCounter {
         case 0:
           "Try to break down the door".onSelect {
-            tell {
+            .tell {
               "You try break down the door with a push"
               "The door doesn't bulge"
-            }.then {
+            } then: {
               .replaceWith(updating { $0.breakTheDoorCounter = 1 }, at: .atTheDoor)
             }
           }
 
         case 1:
           "Try to break down the door again".onSelect {
-            tell {
+            .tell {
               "You try again"
               "You're pushing as hard as you can, but your \"build\" is not exactly one of a door-breaker"
-            }.then {
+            } then: {
               .replaceWith(updating { $0.breakTheDoorCounter = 2 }, at: .atTheDoor)
             }
           }
 
         case 2:
           "Keep pushing".onSelect {
-            tell {
+            .tell {
               "You're basically hurting yourself"
               "It almost feels like the door is made of granite"
               "But it's more likely that you're body is made of jelly"
-            }.then {
+            } then: {
               .replaceWith(updating { $0.breakTheDoorCounter = 3 }, at: .atTheDoor)
             }
           }
 
         default:
           "Look for help".onSelect {
-            tell {
+            .tell {
               "You simply can't break the door down"
               "Maybe you should look for help"
               "It's going to be weird to ask someone to help you break into an apartment"
               "But you don't see many alternatives"
-            }.then {
+            } then: {
               .replaceWith(LookForHelp.Main())
             }
           }
         }
 
         "Go back in the street".onSelect {
-          "You decide to exit the building"
+          .tell {
+            "You decide to exit the building"
+          }
         }
       }
     }
@@ -122,7 +124,7 @@ enum Apartment7 {
         let (_, their, _) = $0.world.targetPersonPronoun
 
         "This must be \(their) apartment".onSelect {
-          tell {
+          .tell {
             "This must be \(their) apartment"
             "Everything leads to this"
             "You must trust your instinct"
@@ -132,7 +134,7 @@ enum Apartment7 {
         }
 
         "Maybe this is not \(their) apartment".onSelect {
-          tell {
+          .tell {
             "Maybe this is not \(their) apartment"
             "You have some doubts now"
             "You feel tired"
@@ -160,7 +162,7 @@ enum Apartment7 {
 
       choose { _ in
         "Turn off the flashlight".onSelect {
-          tell {
+          .tell {
             "You temporarily turn off the flashlight, to look for sources of light"
             "A faint light comes from one of sides of the room"
             "You go towards the light"
@@ -168,7 +170,7 @@ enum Apartment7 {
         }
 
         "Increase the flashlight intensity".onSelect {
-          tell {
+          .tell {
             "You temporarily increase the flashlight intensity, to look for clues"
             "There seems to be a table near one the side of the room"
             "You go towards it"
@@ -197,8 +199,8 @@ enum Apartment7 {
       "It almost looks like someone did this on purpose"
 
       check {
-        if $0.world.didDepleteTheBatteryFaster {
-          tell {
+        .inCase($0.world.didDepleteTheBatteryFaster) {
+          .tell {
             "Your smartphone battery runs off"
             "You're left in the dark"
             "You can only feel the walls, while looking for the door"

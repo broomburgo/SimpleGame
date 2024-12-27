@@ -30,13 +30,17 @@ enum GroceryStore {
 
         if didLookAroundOnce {
           "Look around some more".onSelect {
-            "You take another look around".then {
+            .tell {
+              "You take another look around"
+            } then: {
               .replaceWith(LookAround(main: self))
             }
           }
         } else {
           "Look around".onSelect {
-            "You take a look around".then {
+            .tell {
+              "You take a look around"
+            } then: {
               .replaceWith(LookAround(main: self))
             }
           }
@@ -44,7 +48,9 @@ enum GroceryStore {
 
         if !didAskAboutTheTarget {
           "Ask about the target".onSelect {
-            "You ask the woman at the checkout about the person you're looking for".then {
+            .tell {
+              "You ask the woman at the checkout about the person you're looking for"
+            } then: {
               .replaceWith(AskAboutTheTarget(main: self))
             }
           }
@@ -52,14 +58,16 @@ enum GroceryStore {
 
         if didAskAboutTheTarget, didNoticeMissingBeans {
           "Ask about the beans".onSelect {
-            "'Did \(they) buy all the beans in the store?'".then {
+            .tell {
+              "'Did \(they) buy all the beans in the store?'"
+            } then: {
               .replaceWith(AskAboutTheBeans())
             }
           }
         }
 
         "Get our of here".onSelect {
-          tell {
+          .tell {
             "You decide to leave the grocery store"
             "'Goodbye'"
           }
@@ -108,7 +116,7 @@ enum GroceryStore {
 
       choose { _ in
         "'I'll buy this pack of gum'".onSelect {
-          tell {
+          .tell {
             "'I'll buy this pack of gum'"
             "'That's it? Do you think it could cover, even partially, the cost of the information?'"
             "'I'll buy 10 packs of gum'"
@@ -117,7 +125,7 @@ enum GroceryStore {
         }
 
         "'I'll buy this newspaper'".onSelect {
-          tell {
+          .tell {
             "'I'll buy this newspaper'"
             "'It's from yesterday'"
             "'I'd like to buy it ma'am'"
@@ -130,7 +138,7 @@ enum GroceryStore {
         }
 
         "'I'll buy a pack of cigarettes'".onSelect {
-          tell {
+          .tell {
             "'I'll buy a pack of cigarettes'"
             "'You smoke?'"
             "'Ahem..'"

@@ -22,7 +22,7 @@ enum Street {
         let theCreatureLookedLike = $0.world.theCreatureLookedLike
 
         "Yep".onSelect {
-          tell {
+          .tell {
             "Yes you are, what was I thinking?"
             "Occasionally, you might have a weird dream or two"
             "But you like the normal world"
@@ -34,7 +34,7 @@ enum Street {
         }
 
         "Nope".onSelect {
-          tell {
+          .tell {
             "Not really"
             "It's more like 'it's complicated'"
             "Sometimes you like weird things"
@@ -146,7 +146,9 @@ enum Street {
       choose { context in
         if context.script.hasDescribed(.bookshop), !context.world.wasTheKeyFound {
           "The bookshop".onSelect {
-            "You enter the bookshop".then {
+            .tell {
+              "You enter the bookshop"
+            } then: {
               .runThrough(Bookshop.Main(
                 status: context.world.wasTheBookshopTrashed
                   ? .trashed
@@ -158,7 +160,9 @@ enum Street {
 
         if context.script.hasDescribed(.groceryStore) {
           "The grocery store".onSelect {
-            "You go to the grocery store".then {
+            .tell {
+              "You go to the grocery store"
+            } then: {
               .runThrough(GroceryStore.Main())
             }
           }
@@ -166,7 +170,9 @@ enum Street {
 
         if context.script.hasDescribed(.darkAlley) {
           "The dark alley".onSelect {
-            "You enter the dark alley".then {
+            .tell {
+              "You enter the dark alley"
+            } then: {
               .runThrough(DarkAlley(world: context.world))
             }
           }
@@ -174,7 +180,9 @@ enum Street {
 
         if context.script.hasDescribed(.apartment7) {
           "The apartment block".onSelect {
-            "You enter the building".then {
+            .tell {
+              "You enter the building"
+            } then: {
               .runThrough(Apartment7.Main())
             }
           }

@@ -40,27 +40,27 @@ enum LookForHelp {
         let (they, _, them) = $0.world.targetPersonPronoun
 
         "I got locked out of my apartment".onSelect {
-          tell {
+          .tell {
             "'I got locked out of my apartment'"
             "'What?'"
             "'I got locked out...'"
             "'I've never seen you, you live here?'"
             "'...yeah'"
             "'Since when?'"
-          }.then {
+          } then: {
             .replaceWith(self, at: 1)
           }
         }
 
         "I'm looking for someone".onSelect {
-          tell {
+          .tell {
             "'I'm looking for someone'"
             "'Who?'"
             "'This person'"
             "'Hey, I know \(them)'"
             "'Yes, \(they) live here'"
             "'Are you some kind of stalker?'"
-          }.then {
+          } then: {
             .replaceWith(self, at: 5)
           }
         }
@@ -68,20 +68,20 @@ enum LookForHelp {
 
       choose(1) { _ in
         "Yesterday".onSelect {
-          tell {
+          .tell {
             "'Yesterday'"
             "'Nothing happened yesterday'"
             "'I happened yesterday'"
             "'You \"happened\" yesterday?'"
             "'It's... a joke'"
             "'Didn't get it'"
-          }.then {
+          } then: {
             .replaceWith(self, at: 10)
           }
         }
 
         "Some time ago".onSelect {
-          tell {
+          .tell {
             "'Some time ago'"
             "'I've never seen you'"
             "'Yeah, you said that'"
@@ -89,18 +89,18 @@ enum LookForHelp {
             "'What?'"
             "You are admittedly confused already"
             "'That you live here'"
-          }.then {
+          } then: {
             .replaceWith(self, at: 2)
           }
         }
 
         "I don't remember".onSelect {
-          tell {
+          .tell {
             "'I... don't remember'"
             "'You don't remember?'"
             "'I...'"
             "Let's start again"
-          }.then {
+          } then: {
             .replaceWith(self, at: 0)
           }
         }
@@ -108,7 +108,7 @@ enum LookForHelp {
 
       choose(2) { _ in
         "But I do live here!".onSelect {
-          tell {
+          .tell {
             "'But I do live here!'"
             "At this point, you're too committed to back off"
             "Let the lie continue"
@@ -120,13 +120,13 @@ enum LookForHelp {
             "'I am sure'"
             "You should've backed off"
             "'Cool, I've seen the tenant yesterday, and it's definitely not you'"
-          }.then {
+          } then: {
             .replaceWith(self, at: 3)
           }
         }
 
         "You're right, I don't live here".onSelect {
-          tell {
+          .tell {
             "'You're right, I don't live here'"
             "'I knew it! I'm good at remembering faces'"
             "'Bravo'"
@@ -137,7 +137,7 @@ enum LookForHelp {
             "'Yes, beat you'"
             "'Why would you do such a thing?'"
             "'Because you tricked me'"
-          }.then {
+          } then: {
             .replaceWith(self, at: 4)
           }
         }
@@ -147,26 +147,26 @@ enum LookForHelp {
         let (_, their, them) = $0.world.targetPersonPronoun
 
         "'THIS tenant?'".onSelect {
-          tell {
+          .tell {
             "'THIS tenant?' you ask, while showing \(their) photo, with complete nonchalance, like you didn't even try to trick this guy"
             "'I know \(them)'"
             "'Have you seen \(them) recently?'"
             "'Yes I... wait, you tried to trick me!'"
             "'Who, me?'"
             "'Yes, you'"
-          }.then {
+          } then: {
             .replaceWith(updating { $0.canAskToBreakDownTheDoor = true }, at: 4)
           }
         }
 
         if !hasLiedAboutApartment17 {
           "Sorry, I meant apartment 17".onSelect {
-            tell {
+            .tell {
               "'Sorry, I meant apartment 17'"
               "'You're making it up'"
               "'I'm most certainly not!'"
               "'Ok, I'll bite... and since when have you lived in apartment 17?'"
-            }.then {
+            } then: {
               .replaceWith(updating { $0.hasLiedAboutApartment17 = true }, at: 1)
             }
           }
@@ -177,7 +177,7 @@ enum LookForHelp {
         let (they, _, _) = $0.world.targetPersonPronoun
 
         "Tricking people is part of my job".onSelect {
-          tell {
+          .tell {
             "'Tricking people is part of my job, I'm a private investigator'"
             "'Seriously?'"
             "'Yes sir'"
@@ -185,20 +185,20 @@ enum LookForHelp {
             "'The disappearance of this person'"
             "'\(they.capitalized)'s disappeared?'"
             "'Yes sir'"
-          }.then {
+          } then: {
             .replaceWith(updating { $0.hasInformedAboutTargetDisappearance = true }, at: 10)
           }
         }
 
         "I'm ashamed of myself".onSelect {
-          tell {
+          .tell {
             "'I'm sorry, I'm ashamed of myself, I shouldn't have done that'"
             "'Hey don't get yourself down'"
             "'I'm terrible at my job'"
             "'Don't say that!'"
             "'But it's true'"
             "'What it is that you want exactly?'"
-          }.then {
+          } then: {
             .replaceWith(self, at: 10)
           }
         }
@@ -206,20 +206,20 @@ enum LookForHelp {
 
       choose(5) { _ in
         "I'm not \"stalking\" anybody".onSelect {
-          tell {
+          .tell {
             "'I'm not \"stalking\" anybody, I look for people for a living'"
             "'How's that not stalking?'"
             "'I'm a private investigator'"
             "'So, a professional stalker'"
             "'What?'"
             "'You're literally being paid for stalking'"
-          }.then {
+          } then: {
             .replaceWith(self, at: 10)
           }
         }
 
         "I suppose I am".onSelect {
-          tell {
+          .tell {
             "'I suppose I am, in a sense'"
             "'What sense?'"
             "'I'm a private investigator'"
@@ -227,7 +227,7 @@ enum LookForHelp {
             "'The disappearance of a person'"
             "'Seems serious'"
             "'It is'"
-          }.then {
+          } then: {
             .replaceWith(updating { $0.canAskToBreakDownTheDoor = true }, at: 10)
           }
         }
@@ -235,14 +235,16 @@ enum LookForHelp {
 
       choose(10) { _ in
         "Forget about it, let's start over".onSelect {
-          "'Forget about it, let's start over'".then {
+          .tell {
+            "'Forget about it, let's start over'"
+          } then: {
             .replaceWith(self, at: 0)
           }
         }
 
         if canAskToBreakDownTheDoor {
           "Help me break down a door".onSelect {
-            tell {
+            .tell {
               "'Can you please help me break down a door?'"
 
               if hasInformedAboutTargetDisappearance {

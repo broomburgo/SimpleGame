@@ -29,7 +29,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(url: "https://github.com/broomburgo/Narratore", branch: "strict-concurrency-checking"),
+    .package(path: "../Narratore"),
   ],
   targets: [
     .executableTarget(
