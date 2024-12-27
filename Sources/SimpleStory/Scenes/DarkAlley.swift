@@ -51,7 +51,7 @@ struct DarkAlley: SceneType {
         }
       }
 
-      checkMentalHealth()
+      DO.checkMentalHealth()
 
       "But you notice something weird"
       "A bunch of flattened cardboard boxes, stacked against a wall near one of the bins"

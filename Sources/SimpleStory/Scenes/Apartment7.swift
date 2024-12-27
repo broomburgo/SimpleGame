@@ -146,7 +146,7 @@ enum Apartment7 {
         }
       }
 
-      checkMentalHealth()
+      DO.checkMentalHealth()
 
       "You push yourself deeper into the apartment"
       "You decide to decrease the intensity of the flashlight, as to preserve battery"
@@ -210,7 +210,7 @@ enum Apartment7 {
         }
       }
 
-      checkMentalHealth()
+      DO.checkMentalHealth()
 
       "You keep going"
       "After turning a corner, you finally find a door"

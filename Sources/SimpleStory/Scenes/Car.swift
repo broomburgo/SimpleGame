@@ -73,7 +73,7 @@ struct Car: SceneType {
       }
     }
 
-    checkMentalHealth()
+    DO.checkMentalHealth()
 
     "You're in your car, it's late evening"
     "The car is off, parked on the side of the road, in front of a closed animal shop"
@@ -116,7 +116,7 @@ struct Car: SceneType {
       }
     }
 
-    checkMentalHealth()
+    DO.checkMentalHealth()
 
     "Now, focus: who are you?"
     "..."

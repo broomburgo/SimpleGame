@@ -174,7 +174,7 @@ enum Bookshop {
         $0.decreaseMentalHealth()
       }
 
-      checkMentalHealth()
+      DO.checkMentalHealth()
 
       "You lower the photo"
       "'Hey, I was looking at that!'"

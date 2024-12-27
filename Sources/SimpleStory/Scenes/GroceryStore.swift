@@ -164,7 +164,7 @@ enum GroceryStore {
         }
       }
 
-      checkMentalHealth()
+      DO.checkMentalHealth()
 
       "'And this cute pocket diary' says the woman, pointing at a small agenda on the desk"
       "'What?'"
