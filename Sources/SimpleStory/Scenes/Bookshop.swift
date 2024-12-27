@@ -28,7 +28,7 @@ enum Bookshop {
         "The bookshop is barely lit, with some fake candles on the top shelves projecting a faint, shimmering light"
         "There's lots of bookshelves, some full of books, some almost empty"
 
-        tell {
+        DO.tell {
           if !$0.script.didNarrate(.didMeetTheOwner) {
             "You don't see people in the store"
             "You're quite sure, because you easily see through the empty shelves"
@@ -58,7 +58,7 @@ enum Bookshop {
 
         "You take out the photo, and get near the owner"
 
-        choose(.askQuestions) {
+        DO.choose(.askQuestions) {
           if $0.script.didNarrate(.didShowPhotoOnce) {
             "Show photo again".onSelect {
               .tell {
@@ -101,7 +101,7 @@ enum Bookshop {
 
         "You think about your next steps"
 
-        choose { _ in
+        DO.choose { _ in
           "Ask more questions".onSelect {
             .tell {
               "Maybe you should ask a few more questions"
@@ -129,7 +129,7 @@ enum Bookshop {
           $0.wasTheKeyFound = true
         }
 
-        check {
+        DO.check {
           if $0.world.hasDiscovered(.apartment7) {
             .tell {
               "It's likely the key to the apartment in that apartment block"
@@ -144,7 +144,7 @@ enum Bookshop {
           }
         }
 
-        check {
+        DO.check {
           .inCase($0.world.wasTheDoorClosed) {
             .tell {
               "The door was closed, but now you have a key to enter"
@@ -182,7 +182,7 @@ enum Bookshop {
       "And you have, in fact, someone in front of you"
       "But you're in the private investigation business for the long run, so you contain the urge"
 
-      tell {
+      DO.tell {
         let (they, _, them) = $0.world.targetPersonPronoun
 
         "'I've seen \(them), of course I did, \(they)'s been here many times last week.'"
@@ -194,7 +194,7 @@ enum Bookshop {
       "You think about the fact that you're not liking this exchange, it doesn't seem fruitful"
       "The bookshop owner is not really giving you more info that what you could have guessed by the simple fact that your target recently moved to this neighborhood, and was seen with lots of books"
 
-      choose {
+      DO.choose {
         let (they, their, _) = $0.world.targetPersonPronoun
 
         "\(they.capitalized) wanted a place off the beaten path, to hide \(their) books".onSelect {
@@ -238,7 +238,7 @@ enum Bookshop {
       "'Pretty sure you already asked me that.'"
       "'I forgot the answer'"
 
-      tell {
+      DO.tell {
         let (they, _, them) = $0.world.targetPersonPronoun
 
         "'There's no answer, and don't know where \(they) is, but if you find \(them), please ask about my books'"
@@ -271,7 +271,7 @@ enum Bookshop {
       "'The shop, is doing fine?'"
       "'It's a bookshop, it doesn't feel emotions.'"
 
-      check {
+      DO.check {
         .inCase($0.script.didNarrate(.didThinkAboutTheBookshopFeelings)) {
           .tell {
             "(or does it?)"
@@ -284,7 +284,7 @@ enum Bookshop {
       "..."
       "It would probably feel \"dirty\", given how many people scroll through the pages of random books, before putting them back".with(id: .didThinkAboutTheBookshopFeelings)
 
-      check {
+      DO.check {
         if $0.script.narrated[.didThinkAboutTheBookshopFeelings, default: 0] >= 3 {
           .tell {
             "..."
@@ -315,7 +315,7 @@ enum Bookshop {
       "You can feel it now"
       "The bookshop is talking to you"
 
-      tell {
+      DO.tell {
         let (they, their, them) = $0.world.targetPersonPronoun
 
         "I'VE SEEN \(them.uppercased())"

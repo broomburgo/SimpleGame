@@ -17,7 +17,7 @@ enum Apartment7 {
     var steps: Steps {
       "You get to apartment 7"
 
-      tell {
+      DO.tell {
         if !$0.world.didDescribeTheApartment7Door {
           "The door looks different than other doors"
           "It has the same \"moldy\" look as the building facade"
@@ -31,7 +31,7 @@ enum Apartment7 {
         $0.wasTheDoorClosed = true
       }
 
-      choose(.atTheDoor) {
+      DO.choose(.atTheDoor) {
         if $0.world.wasTheKeyFound {
           "Open the door with the key".onSelect {
             .tell {
@@ -110,7 +110,7 @@ enum Apartment7 {
       "There's books everywhere, some probably from the bookshop"
       "But no clear clue of where's the person you're looking for"
 
-      tell {
+      DO.tell {
         if Deduction.allCases.allSatisfy($0.world.hasDeduced) {
           "But everything leads here"
           "The target moved to this neighborhood because of that peculiar bookshop"
@@ -120,7 +120,7 @@ enum Apartment7 {
         }
       }
 
-      choose {
+      DO.choose {
         let (_, their, _) = $0.world.targetPersonPronoun
 
         "This must be \(their) apartment".onSelect {
@@ -160,7 +160,7 @@ enum Apartment7 {
       "You start exploring the darkness of this place"
       "It's like a very large room, with columns, probably supporting the building above"
 
-      choose { _ in
+      DO.choose { _ in
         "Turn off the flashlight".onSelect {
           .tell {
             "You temporarily turn off the flashlight, to look for sources of light"
@@ -185,7 +185,7 @@ enum Apartment7 {
       "You take the key: there must be some door around"
       "On the ceiling, a small hole, from which it drips a gooey substance"
 
-      tell {
+      DO.tell {
         if $0.world.wasTheSlimyGooeySubstanceObservedInTheDarkAlley {
           "It must be the same substance you found in the dark alley"
           "And this must be that hole"
@@ -198,7 +198,7 @@ enum Apartment7 {
       "The wall is dirty and moldy, but not like those of abandoned basements"
       "It almost looks like someone did this on purpose"
 
-      check {
+      DO.check {
         .inCase($0.world.didDepleteTheBatteryFaster) {
           .tell {
             "Your smartphone battery runs off"

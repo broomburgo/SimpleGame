@@ -24,7 +24,7 @@ enum LookForHelp {
       "He's coming"
       "Here we go"
       "'Hello sir, can you help me?'"
-      then { .replaceWith(Conversation()) }
+      DO.then { .replaceWith(Conversation()) }
     }
   }
 
@@ -36,7 +36,7 @@ enum LookForHelp {
     var canAskToBreakDownTheDoor = false
 
     var steps: Steps {
-      choose(0) {
+      DO.choose(0) {
         let (they, _, them) = $0.world.targetPersonPronoun
 
         "I got locked out of my apartment".onSelect {
@@ -66,7 +66,7 @@ enum LookForHelp {
         }
       }
 
-      choose(1) { _ in
+      DO.choose(1) { _ in
         "Yesterday".onSelect {
           .tell {
             "'Yesterday'"
@@ -106,7 +106,7 @@ enum LookForHelp {
         }
       }
 
-      choose(2) { _ in
+      DO.choose(2) { _ in
         "But I do live here!".onSelect {
           .tell {
             "'But I do live here!'"
@@ -143,7 +143,7 @@ enum LookForHelp {
         }
       }
 
-      choose(3) {
+      DO.choose(3) {
         let (_, their, them) = $0.world.targetPersonPronoun
 
         "'THIS tenant?'".onSelect {
@@ -173,7 +173,7 @@ enum LookForHelp {
         }
       }
 
-      choose(4) {
+      DO.choose(4) {
         let (they, _, _) = $0.world.targetPersonPronoun
 
         "Tricking people is part of my job".onSelect {
@@ -204,7 +204,7 @@ enum LookForHelp {
         }
       }
 
-      choose(5) { _ in
+      DO.choose(5) { _ in
         "I'm not \"stalking\" anybody".onSelect {
           .tell {
             "'I'm not \"stalking\" anybody, I look for people for a living'"
@@ -233,7 +233,7 @@ enum LookForHelp {
         }
       }
 
-      choose(10) { _ in
+      DO.choose(10) { _ in
         "Forget about it, let's start over".onSelect {
           .tell {
             "'Forget about it, let's start over'"
@@ -273,7 +273,7 @@ enum LookForHelp {
       "'That was fun'"
       "The guy walks away"
       "You enter the apartment"
-      then { .transitionTo(Apartment7.TheApartment()) }
+      DO.then { .transitionTo(Apartment7.TheApartment()) }
     }
   }
 }

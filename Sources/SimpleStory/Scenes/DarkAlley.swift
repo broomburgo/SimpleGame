@@ -17,7 +17,7 @@ struct DarkAlley: SceneType {
       "Not much to say, actually"
       "Garbage bins, here and there"
 
-      check {
+      DO.check {
         .inCase($0.world.theCreatureLookedLike == .aDarkShadow) {
           .tell {
             "The only thing that could lurk here is the shadow that you were dreaming about"
@@ -28,7 +28,7 @@ struct DarkAlley: SceneType {
         }
       }
 
-      check {
+      DO.check {
         .inCase($0.world.theCreatureLookedLike == .aDarkShadow) {
           .choose {
             "It was just a dream".onSelect {
@@ -57,7 +57,7 @@ struct DarkAlley: SceneType {
       "A bunch of flattened cardboard boxes, stacked against a wall near one of the bins"
       "You don't know why, but they picked your curiosity"
 
-      choose {
+      DO.choose {
         "I bet there's a corpse underneath".onSelect {
           .tell {
             "There must be a corpse underneath"
@@ -86,7 +86,7 @@ struct DarkAlley: SceneType {
 
       "You move the cardboard boxes"
 
-      check {
+      DO.check {
         .inCase($0.script.didNarrate(.didSpeculatedAboutTheCorpse)) {
           .tell {
             "Of course there's no corpse underneath"
@@ -102,7 +102,7 @@ struct DarkAlley: SceneType {
       "You have no idea what's that about, but then you remember"
       "The grocery store owner told that the person that you're looking for seemed to be dumping here a bunch of bean cans"
 
-      check {
+      DO.check {
         let pronoun = $0.world.targetPersonPronoun.they
 
         return .tell {
@@ -110,7 +110,7 @@ struct DarkAlley: SceneType {
         }
       }
 
-      choose {
+      DO.choose {
         let (they, their, them) = $0.world.targetPersonPronoun
 
         "\(they.capitalized) must be \"feeding\" something".onSelect {

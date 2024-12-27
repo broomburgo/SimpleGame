@@ -5,7 +5,7 @@ struct Car: SceneType {
   private var typeName = Self.identifier
 
   var steps: Steps {
-    requestText {
+    DO.requestText {
       "What's your name?"
     } validate: { text in
       if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -28,7 +28,7 @@ struct Car: SceneType {
     "Then something happened, something filled your eyes, a creature maybe, swimming through the underwater currents"
     "You try to remember what the creature looked like.."
 
-    choose { _ in
+    DO.choose { _ in
       "Some kind of alien?".onSelect {
         .tell {
           "...then it comes to your mind: it was some kind of alien being"
@@ -63,7 +63,7 @@ struct Car: SceneType {
       }
     }
 
-    check {
+    DO.check {
       .inCase($0.world.theCreatureLookedLike == .anAlienBeing) {
         .tell(tags: [.init("You feel scared, all of a sudden")]) {
           "While your spirit enjoys the idea of an underwater alien haunting your dreams, your mind really doesn't"
@@ -84,7 +84,7 @@ struct Car: SceneType {
     "What person? Who are you?"
     "You dozed off pretty heavily, and the sound of falling rain didn't help in staying awake"
 
-    choose { _ in
+    DO.choose { _ in
       "You had trouble sleeping recently".onSelect {
         .tell(tags: [.init("You feel a sense of unease")]) {
           "You had trouble sleeping recently"
@@ -127,7 +127,7 @@ struct Car: SceneType {
     "By asking around, you discovered that the target could be in this neighborhood"
     "You look at the photograph"
 
-    choose { _ in
+    DO.choose { _ in
       "A man".onSelect {
         .tell {
           "An anonymously looking man, in his thirties"
@@ -145,7 +145,7 @@ struct Car: SceneType {
       }
     }
 
-    tell {
+    DO.tell {
       let (they, their, them) = $0.world.targetPersonPronoun
 
       "One of you contacts told you to have seen \(them) walking around here, about this hour in the evening, carrying what looked like a tower of books on \(their) hands"
@@ -158,6 +158,6 @@ struct Car: SceneType {
 
     "It's time to get out of the car, and start looking around"
 
-    then { .transitionTo(Street.Main()) }
+    DO.then { .transitionTo(Street.Main()) }
   }
 }

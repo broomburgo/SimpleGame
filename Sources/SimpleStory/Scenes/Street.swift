@@ -18,7 +18,7 @@ enum Street {
       "...it probably would have interfered with you private eye game"
       "Wait, are you 'weird'?"
 
-      choose {
+      DO.choose {
         let theCreatureLookedLike = $0.world.theCreatureLookedLike
 
         "Yep".onSelect {
@@ -69,7 +69,7 @@ enum Street {
 
       "And let's get to work"
 
-      then { .transitionTo(LookingAround()) }
+      DO.then { .transitionTo(LookingAround()) }
     }
   }
 
@@ -83,14 +83,14 @@ enum Street {
     var steps: Steps {
       "The rain is thin but persistent"
 
-      update {
+      DO.update {
         $0.didDiscover(.bookshop)
         $0.didDiscover(.groceryStore)
       }
 
       "You look around".with(anchor: .backInStreet)
 
-      tell {
+      DO.tell {
         if $0.world.hasDiscovered(.bookshop), !$0.script.hasDescribed(.bookshop) {
           "You see a faint blue sign on a wall, lost in the darkness of the dirty bricks of a building on the other side of the street"
           "The sign says, intermittently, 'Books'"
@@ -143,7 +143,7 @@ enum Street {
 
       "Where will you go now?"
 
-      choose { context in
+      DO.choose { context in
         if context.script.hasDescribed(.bookshop), !context.world.wasTheKeyFound {
           "The bookshop".onSelect {
             .tell {
@@ -191,7 +191,7 @@ enum Street {
 
       "You're back in the street"
 
-      then { .replaceWith(self, at: .backInStreet) }
+      DO.then { .replaceWith(self, at: .backInStreet) }
     }
   }
 }

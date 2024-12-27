@@ -122,8 +122,8 @@ extension SimpleStory.World {
 
 extension SceneType<SimpleStory> {
   func checkMentalHealth() -> [SceneStep<Self>] {
-    group {
-      check {
+    DO.group {
+      DO.check {
         switch $0.world.mentalHealth {
         case 0:
           .tell {

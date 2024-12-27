@@ -25,7 +25,7 @@ enum GroceryStore {
 
       "What will you do?".with(anchor: .whatToDo)
 
-      choose {
+      DO.choose {
         let (they, _, _) = $0.world.targetPersonPronoun
 
         if didLookAroundOnce {
@@ -89,11 +89,11 @@ enum GroceryStore {
         "You just noticed"
         "The canned food isle is completely missing beans"
         "There's a whole column empty"
-        then { .replaceWith(main.updating { $0.didNoticeMissingBeans = true }, at: .whatToDo) }
+        DO.then { .replaceWith(main.updating { $0.didNoticeMissingBeans = true }, at: .whatToDo) }
       } else {
         "You would too, probably, if you were hungry or something"
         "But you had a serious lunch, and don't feel like dinner yet"
-        then { .replaceWith(main.updating { $0.didLookAroundOnce = true }, at: .whatToDo) }
+        DO.then { .replaceWith(main.updating { $0.didLookAroundOnce = true }, at: .whatToDo) }
       }
     }
   }
@@ -114,7 +114,7 @@ enum GroceryStore {
       "You like being called \"dear\""
       "But not in the midst of a \"transaction\""
 
-      choose { _ in
+      DO.choose { _ in
         "'I'll buy this pack of gum'".onSelect {
           .tell {
             "'I'll buy this pack of gum'"
@@ -176,7 +176,7 @@ enum GroceryStore {
       "You buy the whole lot, then, as fast as you can, you get the target person's photo out of your pocket and show it to the woman, lest she decides to charge you an extra for the time"
       "'Have you seen this person?'"
 
-      tell {
+      DO.tell {
         let (they, _, them) = $0.world.targetPersonPronoun
 
         "'Yeah, I've probably seen \(them)'"
@@ -185,7 +185,7 @@ enum GroceryStore {
       }
 
       "This was pointless"
-      then { .replaceWith(main.updating { $0.didAskAboutTheTarget = true }, at: .whatToDo) }
+      DO.then { .replaceWith(main.updating { $0.didAskAboutTheTarget = true }, at: .whatToDo) }
     }
   }
 
@@ -202,7 +202,7 @@ enum GroceryStore {
       "...and throw it on the desk."
       "'20 packs of gum please'"
 
-      tell {
+      DO.tell {
         let (they, _, _) = $0.world.targetPersonPronoun
         "'Instead of using the front door, \(they) got out from the back'"
         "'There's a rather shady alley back there'"
