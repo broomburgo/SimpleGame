@@ -182,7 +182,7 @@ enum GroceryStore {
   }
 
   struct AskAboutTheBeans: SceneType {
-    private var typeName = "\(Self.self)"
+    private var typeName = Self.identifier
 
     var steps: Steps {
       "'I'm not sure, maybe yes'"

@@ -8,7 +8,7 @@ enum LookForHelp {
   ]
 
   struct Main: SceneType {
-    private var typeName = "\(Self.self)"
+    private var typeName = Self.identifier
 
     var steps: Steps {
       "You start wandering about the corridors of the ground floor of this building"

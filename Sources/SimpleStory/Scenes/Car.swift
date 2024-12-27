@@ -2,7 +2,7 @@ import Narratore
 import SimpleSetting
 
 struct Car: SceneType {
-  private var typeName = "\(Self.self)"
+  private var typeName = Self.identifier
 
   var steps: Steps {
     requestText {

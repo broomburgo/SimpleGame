@@ -165,7 +165,7 @@ extension SceneType<SimpleStory> {
 }
 
 struct PassedOut: SceneType {
-  private var typeName = "\(Self.self)"
+  private var typeName = Self.identifier
 
   var steps: Steps {
     "You fall on the ground"

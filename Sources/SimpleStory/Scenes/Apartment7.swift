@@ -97,7 +97,7 @@ enum Apartment7 {
   }
 
   struct TheApartment: SceneType {
-    private var typeName = "\(Self.self)"
+    private var typeName = Self.identifier
 
     var steps: Steps {
       "It's really dark, the windows are shut, and the lights don't work"
