@@ -9,7 +9,7 @@ enum Apartment7 {
 
   struct Main: SceneType {
     enum Anchor: Codable, Hashable, Sendable {
-      case atTheDoor
+      case theDoor
     }
 
     var breakTheDoorCounter: Int = 0
@@ -31,7 +31,7 @@ enum Apartment7 {
         $0.wasTheDoorClosed = true
       }
 
-      DO.choose(.atTheDoor) {
+      DO.choose(anchor: .theDoor) {
         if $0.world.wasTheKeyFound {
           "Open the door with the key".onSelect {
             .tell {
@@ -51,7 +51,7 @@ enum Apartment7 {
               "You try break down the door with a push"
               "The door doesn't bulge"
             } then: {
-              .replaceWith(updating { $0.breakTheDoorCounter = 1 }, at: .atTheDoor)
+              .replaceWith(updating { $0.breakTheDoorCounter = 1 }, at: .theDoor)
             }
           }
 
@@ -61,7 +61,7 @@ enum Apartment7 {
               "You try again"
               "You're pushing as hard as you can, but your \"build\" is not exactly one of a door-breaker"
             } then: {
-              .replaceWith(updating { $0.breakTheDoorCounter = 2 }, at: .atTheDoor)
+              .replaceWith(updating { $0.breakTheDoorCounter = 2 }, at: .theDoor)
             }
           }
 
@@ -72,7 +72,7 @@ enum Apartment7 {
               "It almost feels like the door is made of granite"
               "But it's more likely that you're body is made of jelly"
             } then: {
-              .replaceWith(updating { $0.breakTheDoorCounter = 3 }, at: .atTheDoor)
+              .replaceWith(updating { $0.breakTheDoorCounter = 3 }, at: .theDoor)
             }
           }
 

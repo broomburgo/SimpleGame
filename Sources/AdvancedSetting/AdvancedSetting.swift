@@ -3,19 +3,19 @@ import SimpleSetting
 
 /// Describes the attributes of the player character (like "vigor" and "wisdom".
 public protocol AdvancedSettingAttribute: Codable, Hashable, Sendable {
-  associatedtype Value: Codable & Sendable
+  associatedtype Value: Codable, Sendable
 }
 
 /// Describes the possible inventory items.
 public protocol AdvancedSettingInventoryItem: Codable, Hashable, Sendable {
-  associatedtype Count: Codable & Sendable
+  associatedtype Count: Codable, Sendable
 }
 
 /// Adds extra concepts to the `Setting`.
 public protocol AdvancedSettingExtra: Sendable {
   associatedtype Attribute: AdvancedSettingAttribute
   associatedtype InventoryItem: AdvancedSettingInventoryItem
-  associatedtype CustomWorld: Codable & Sendable
+  associatedtype CustomWorld: Codable, Sendable
 }
 
 /// A `World` type that includes the `Extra` concepts.
@@ -37,7 +37,7 @@ public struct AdvancedWorld<Extra: AdvancedSettingExtra>: Codable, Sendable {
 
 /// Adds localization to the `Setting`.
 public protocol Localizing {
-  associatedtype Language: Hashable & Codable
+  associatedtype Language: Hashable, Codable
   static var base: Language { get }
   static var current: Language { get set }
   static var translations: [String: [Language: String]] { get }

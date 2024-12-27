@@ -10,7 +10,7 @@ enum GroceryStore {
   ]
 
   struct Main: SceneType {
-    enum Anchor: Codable & Hashable {
+    enum Anchor: Codable, Hashable {
       case whatToDo
     }
 

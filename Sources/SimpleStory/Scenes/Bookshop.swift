@@ -16,7 +16,7 @@ enum Bookshop {
   }
 
   struct Main: SceneType {
-    enum Anchor: Codable & Hashable {
+    enum Anchor: Codable, Hashable {
       case askQuestions
     }
 
@@ -58,7 +58,7 @@ enum Bookshop {
 
         "You take out the photo, and get near the owner"
 
-        DO.choose(.askQuestions) {
+        DO.choose(anchor: .askQuestions) {
           if $0.script.didNarrate(.didShowPhotoOnce) {
             "Show photo again".onSelect {
               .tell {

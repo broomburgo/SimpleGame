@@ -23,7 +23,7 @@ public enum SimpleSetting: Setting {
     }
   }
 
-  public struct Message: Messaging & ExpressibleByStringLiteral {
+  public struct Message: Messaging, ExpressibleByStringLiteral {
     public var id: ID?
     public var text: String
 
@@ -45,7 +45,7 @@ public enum SimpleSetting: Setting {
     }
   }
 
-  public struct Tag: Tagging & CustomStringConvertible {
+  public struct Tag: Tagging, CustomStringConvertible {
     public var value: String
     public var shouldObserve: Bool
 

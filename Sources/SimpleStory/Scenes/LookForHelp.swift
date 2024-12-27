@@ -36,7 +36,7 @@ enum LookForHelp {
     var canAskToBreakDownTheDoor = false
 
     var steps: Steps {
-      DO.choose(0) {
+      DO.choose(anchor: 0) {
         let (they, _, them) = $0.world.targetPersonPronoun
 
         "I got locked out of my apartment".onSelect {
@@ -66,7 +66,7 @@ enum LookForHelp {
         }
       }
 
-      DO.choose(1) { _ in
+      DO.choose(anchor: 1) { _ in
         "Yesterday".onSelect {
           .tell {
             "'Yesterday'"
@@ -106,7 +106,7 @@ enum LookForHelp {
         }
       }
 
-      DO.choose(2) { _ in
+      DO.choose(anchor: 2) { _ in
         "But I do live here!".onSelect {
           .tell {
             "'But I do live here!'"
@@ -143,7 +143,7 @@ enum LookForHelp {
         }
       }
 
-      DO.choose(3) {
+      DO.choose(anchor: 3) {
         let (_, their, them) = $0.world.targetPersonPronoun
 
         "'THIS tenant?'".onSelect {
@@ -173,7 +173,7 @@ enum LookForHelp {
         }
       }
 
-      DO.choose(4) {
+      DO.choose(anchor: 4) {
         let (they, _, _) = $0.world.targetPersonPronoun
 
         "Tricking people is part of my job".onSelect {
@@ -204,7 +204,7 @@ enum LookForHelp {
         }
       }
 
-      DO.choose(5) { _ in
+      DO.choose(anchor: 5) { _ in
         "I'm not \"stalking\" anybody".onSelect {
           .tell {
             "'I'm not \"stalking\" anybody, I look for people for a living'"
@@ -233,7 +233,7 @@ enum LookForHelp {
         }
       }
 
-      DO.choose(10) { _ in
+      DO.choose(anchor: 10) { _ in
         "Forget about it, let's start over".onSelect {
           .tell {
             "'Forget about it, let's start over'"
