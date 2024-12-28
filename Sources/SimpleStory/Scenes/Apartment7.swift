@@ -99,8 +99,6 @@ enum Apartment7 {
   }
 
   struct TheApartment: SceneType {
-    private var typeName = Self.identifier
-
     var steps: Steps {
       "It's really dark, the windows are shut, and the lights don't work"
       "You activate the flashlight on your smartphone, but the battery is almost dead, it's not going to last long"

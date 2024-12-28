@@ -2,8 +2,6 @@ import Narratore
 import SimpleSetting
 
 struct Car: SceneType {
-  private var typeName = Self.identifier
-
   var steps: Steps {
     DO.requestText {
       "What's your name?"

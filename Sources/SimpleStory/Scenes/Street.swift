@@ -8,8 +8,6 @@ enum Street {
   ]
 
   struct Main: SceneType {
-    private var typeName = Self.identifier
-
     var steps: Steps {
       "It's a rainy evening, and the street is almost empty"
       "Few people live in this part of town. This is one of those neighborhoods that, while not exactly bad per se, has a fame of being inhabited by 'weird' people"
@@ -74,8 +72,6 @@ enum Street {
   }
 
   struct LookingAround: SceneType {
-    private var typeName = Self.identifier
-
     enum Anchor: Codable, Hashable, Sendable {
       case backInStreet
     }

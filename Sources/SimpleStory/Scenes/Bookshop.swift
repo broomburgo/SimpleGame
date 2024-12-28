@@ -156,8 +156,6 @@ enum Bookshop {
   }
 
   struct ShowPhoto: SceneType {
-    private var typeName = Self.identifier
-
     var steps: Steps {
       "'Have you seen this person?'"
       "'mmm...'"
@@ -231,8 +229,6 @@ enum Bookshop {
   }
 
   struct ShowPhotoAgain: SceneType {
-    private var typeName = Self.identifier
-
     var steps: Steps {
       "'Have you seen this person?'"
       "'Pretty sure you already asked me that.'"
@@ -264,8 +260,6 @@ enum Bookshop {
   }
 
   struct AboutTheShop: SceneType {
-    private var typeName = Self.identifier
-
     var steps: Steps {
       "'What do you mean?'"
       "'The shop, is doing fine?'"
@@ -303,8 +297,6 @@ enum Bookshop {
   }
 
   struct TheFeelingShop: SceneType {
-    private var typeName = Self.identifier
-
     var steps: Steps {
       "You really like this idea of a feeling bookshop, don't you?"
       "Let me indulge you"

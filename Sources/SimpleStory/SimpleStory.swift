@@ -163,8 +163,6 @@ extension DO where Scene.Game == SimpleStory {
 }
 
 struct PassedOut: SceneType {
-  private var typeName = Self.identifier
-
   var steps: Steps {
     "You fall on the ground"
     "You're eyes are closing"

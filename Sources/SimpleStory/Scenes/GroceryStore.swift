@@ -190,8 +190,6 @@ enum GroceryStore {
   }
 
   struct AskAboutTheBeans: SceneType {
-    private var typeName = Self.identifier
-
     var steps: Steps {
       "'I'm not sure, maybe yes'"
       "'But you know what? Something strange happened a couple of days ago, when she bought so many beans that she needed a shopping cart to carry them, a cart that she brought herself here'"
