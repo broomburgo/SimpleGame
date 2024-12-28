@@ -156,6 +156,6 @@ struct Car: SceneType {
 
     "It's time to get out of the car, and start looking around"
 
-    DO.then { .transitionTo(Street.Main()) }
+    DO.then { .transitionTo(Street_Main()) }
   }
 }
