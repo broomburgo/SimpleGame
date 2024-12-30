@@ -60,15 +60,27 @@ public enum SimpleSetting: Setting {
   }
 
   public enum Generate: Generating {
-    public nonisolated(unsafe) static var getFixedRandomRatio: (() -> Double)? = nil
-    public nonisolated(unsafe) static var getFixedUniqueString: (() -> String)? = nil
+    public actor Fixed {
+      public static let shared = Fixed()
 
-    public static func randomRatio() -> Double {
-      getFixedRandomRatio?() ?? Double((0...1000).randomElement()!) / 1000
+      public var randomRatio: Double?
+      public var uniqueString: String?
+
+      public func set(randomRatio: Double?) {
+        self.randomRatio = randomRatio
+      }
+
+      public func set(uniqueString: String?) {
+        self.uniqueString = uniqueString
+      }
     }
 
-    public static func uniqueString() -> String {
-      getFixedUniqueString?() ?? UUID().uuidString
+    public static func randomRatio() async -> Double {
+      await Fixed.shared.randomRatio ?? Double((0...1000).randomElement()!) / 1000
+    }
+
+    public static func uniqueString() async -> String {
+      await Fixed.shared.uniqueString ?? UUID().uuidString
     }
   }
 }

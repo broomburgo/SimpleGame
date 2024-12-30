@@ -6,9 +6,9 @@ import SimpleStory
 @main
 enum Main {
   static func main() async {
-    let handler = SimpleHandler<SimpleStory>.init()
+    let handler = SimpleHandler<SimpleStory>()
 
-    let runner = Runner<SimpleStory>.init(
+    let runner = Runner<SimpleStory>(
       handler: handler,
       status: handler.askToRestoreStatusIfPossible() ?? .init(
         world: .init(),
