@@ -1,25 +1,16 @@
 import Narratore
 import SimpleSetting
 
-/// Describes the attributes of the player character (like "vigor" and "wisdom".
-public protocol AdvancedSettingAttribute: Codable, Hashable, Sendable {
-  associatedtype Value: Codable, Sendable
-}
-
-/// Describes the possible inventory items.
-public protocol AdvancedSettingInventoryItem: Codable, Hashable, Sendable {
-  associatedtype Count: Codable, Sendable
-}
-
-/// Adds extra concepts to the `Setting`.
-public protocol AdvancedSettingExtra: Sendable {
-  associatedtype Attribute: AdvancedSettingAttribute
-  associatedtype InventoryItem: AdvancedSettingInventoryItem
-  associatedtype CustomWorld: Codable, Sendable
+/// A `Setting` that includes extra concepts, and message localization.
+public protocol AdvancedSetting: Setting where
+  World == AdvancedWorld<Extra>,
+  Message == LocalizedMessage<Localization> {
+  associatedtype Extra: AdvancedWorldExtra
+  associatedtype Localization: Localizing
 }
 
 /// A `World` type that includes the `Extra` concepts.
-public struct AdvancedWorld<Extra: AdvancedSettingExtra>: Codable, Sendable {
+public struct AdvancedWorld<Extra: AdvancedWorldExtra>: Codable, Sendable {
   public var attributes: [Extra.Attribute: Extra.Attribute.Value]
   public var inventory: [Extra.InventoryItem: Extra.InventoryItem.Count]
   public var custom: Extra.CustomWorld
@@ -35,12 +26,21 @@ public struct AdvancedWorld<Extra: AdvancedSettingExtra>: Codable, Sendable {
   }
 }
 
-/// Adds localization to the `Setting`.
-public protocol Localizing {
-  associatedtype Language: Hashable, Codable
-  static var base: Language { get }
-  static var current: Language { get set }
-  static var translations: [String: [Language: String]] { get }
+/// Adds extra concepts to a `World`.
+public protocol AdvancedWorldExtra: Sendable {
+  associatedtype Attribute: AdvancedWorldAttribute
+  associatedtype InventoryItem: AdvancedWorldInventoryItem
+  associatedtype CustomWorld: Codable, Sendable
+}
+
+/// Describes the attributes of the player character (like "vigor" and "wisdom".
+public protocol AdvancedWorldAttribute: Codable, Hashable, Sendable {
+  associatedtype Value: Codable, Sendable
+}
+
+/// Describes the possible inventory items.
+public protocol AdvancedWorldInventoryItem: Codable, Hashable, Sendable {
+  associatedtype Count: Codable, Sendable
 }
 
 /// A type of `Message` that uses `Localization` to provide a localized text, based the `base: Language` text, and `templateValues` (if needed).
@@ -90,12 +90,41 @@ public struct LocalizedMessage<Localization: Localizing>: Messaging {
   }
 }
 
-/// A `Setting` that includes extra concepts, and message localization.
-public protocol AdvancedSetting: Setting where
-  World == AdvancedWorld<Extra>,
-  Message == LocalizedMessage<Localization> {
-  associatedtype Extra: AdvancedSettingExtra
-  associatedtype Localization: Localizing
+/// Adds localization to the `Setting`.
+public protocol Localizing {
+  associatedtype Language: Hashable, Codable
+  static var base: Language { get }
+  static var current: Language { get set }
+  static var translations: [String: [Language: String]] { get }
+}
+
+extension String {
+  public func with<Localization: Localizing>(
+    templateValues: [String: String],
+    id: LocalizedMessage<Localization>.ID? = nil
+  ) -> LocalizedMessage<Localization> {
+    .init(id: id, baseText: self, templateValues: templateValues)
+  }
+
+  public func with<Scene: SceneType>(
+    templateValues: [String: String],
+    anchor: Scene.Anchor? = nil,
+    id: Scene.Game.Message.ID? = nil,
+    tags: [Scene.Game.Tag] = [],
+    update: Update<Scene.Game>? = nil
+  ) -> SceneStep<Scene> where Scene.Game: AdvancedSetting {
+    .init(
+      anchor: anchor,
+      getStep: .init { _ in
+        .tell(
+          tags: tags,
+          getMessages: { [.init(id: id, baseText: self, templateValues: templateValues)] },
+          update: update,
+          then: nil
+        )
+      }
+    )
+  }
 }
 
 /// A possible `AdvancedSetting` type.
@@ -104,8 +133,8 @@ public protocol AdvancedSetting: Setting where
 /// - some specific definitions for attributes and inventory;
 /// - `.english` and `.italian` localizations.
 public enum MyAdvancedSetting: AdvancedSetting {
-  public enum Extra: AdvancedSettingExtra {
-    public struct Attribute: AdvancedSettingAttribute {
+  public enum Extra: AdvancedWorldExtra {
+    public struct Attribute: AdvancedWorldAttribute {
       public var name: String
 
       public init(name: String) {
@@ -119,7 +148,7 @@ public enum MyAdvancedSetting: AdvancedSetting {
       }
     }
 
-    public struct InventoryItem: AdvancedSettingInventoryItem {
+    public struct InventoryItem: AdvancedWorldInventoryItem {
       public var name: String
 
       public init(name: String) {
