@@ -4,7 +4,7 @@ import Narratore
 private let directoryPath = "SimpleGameSupportingFiles"
 private let filePath = "\(directoryPath)/Status.json"
 
-public final class SimpleHandler<Game: Story> {
+public struct SimpleHandler<Game: Story> {
   public init() {}
 
   public func askToRestoreStatusIfPossible() -> Status<Game>? {
