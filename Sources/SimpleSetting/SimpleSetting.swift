@@ -2,28 +2,32 @@ import Foundation
 import Narratore
 
 public enum SimpleSetting: Setting {
-  public struct World: Codable {
-    public var value: [Key: Value] = [:]
-    public var list: [Key: [Value]] = [:]
+  public enum Generate: Generating {
+    public actor Fixed {
+      public static let shared = Fixed()
 
-    public init() {}
+      public var randomRatio: Double?
+      public var uniqueString: String?
 
-    public struct Key: ExpressibleByStringLiteral & CustomStringConvertible & Codable & Equatable & Hashable {
-      public var description: String
-      public init(stringLiteral value: String) {
-        description = value
+      public func set(randomRatio: Double?) {
+        self.randomRatio = randomRatio
+      }
+
+      public func set(uniqueString: String?) {
+        self.uniqueString = uniqueString
       }
     }
 
-    public struct Value: ExpressibleByStringLiteral & CustomStringConvertible & Codable & Equatable {
-      public var description: String
-      public init(stringLiteral value: String) {
-        description = value
-      }
+    public static func randomRatio() async -> Double {
+      await Fixed.shared.randomRatio ?? Double((0...1000).randomElement()!) / 1000
+    }
+
+    public static func uniqueString() async -> String {
+      await Fixed.shared.uniqueString ?? UUID().uuidString
     }
   }
 
-  public struct Message: Messaging & ExpressibleByStringLiteral {
+  public struct Message: Messaging, ExpressibleByStringLiteral {
     public var id: ID?
     public var text: String
 
@@ -36,7 +40,7 @@ public enum SimpleSetting: Setting {
       self.init(id: nil, text: value)
     }
 
-    public struct ID: Hashable & Codable & ExpressibleByStringLiteral & CustomStringConvertible {
+    public struct ID: Hashable, Codable, Sendable, ExpressibleByStringLiteral, CustomStringConvertible {
       public var description: String
 
       public init(stringLiteral value: String) {
@@ -45,7 +49,7 @@ public enum SimpleSetting: Setting {
     }
   }
 
-  public struct Tag: Tagging & CustomStringConvertible {
+  public struct Tag: Tagging, CustomStringConvertible {
     public var value: String
     public var shouldObserve: Bool
 
@@ -59,16 +63,24 @@ public enum SimpleSetting: Setting {
     }
   }
 
-  public enum Generate: Generating {
-    public static var getFixedRandomRatio: (() -> Double)? = nil
-    public static var getFixedUniqueString: (() -> String)? = nil
+  public struct World: Codable, Sendable {
+    public var value: [Key: Value] = [:]
+    public var list: [Key: [Value]] = [:]
 
-    public static func randomRatio() -> Double {
-      getFixedRandomRatio?() ?? Double((0 ... 1000).randomElement()!) / 1000
+    public init() {}
+
+    public struct Key: ExpressibleByStringLiteral, CustomStringConvertible, Codable, Equatable, Hashable, Sendable {
+      public var description: String
+      public init(stringLiteral value: String) {
+        description = value
+      }
     }
 
-    public static func uniqueString() -> String {
-      getFixedUniqueString?() ?? UUID().uuidString
+    public struct Value: ExpressibleByStringLiteral, CustomStringConvertible, Codable, Equatable, Sendable {
+      public var description: String
+      public init(stringLiteral value: String) {
+        description = value
+      }
     }
   }
 }

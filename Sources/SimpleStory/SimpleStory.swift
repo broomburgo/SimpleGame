@@ -3,11 +3,17 @@ import SimpleSetting
 
 public typealias SimpleStory = SimpleSetting
 
-extension SceneType {
-  public typealias Game = SimpleStory
+extension SimpleStory {
+  public static func initialScene() -> some SceneType<Self> {
+    Car()
+  }
 }
 
-extension SimpleSetting: Story {
+extension SceneType {
+  typealias Game = SimpleStory
+}
+
+extension SimpleStory: Story {
   public static let scenes: [RawScene<SimpleStory>] = Array([
     Apartment7.scenes,
     Bookshop.scenes,
@@ -28,7 +34,7 @@ extension SimpleStory.World.Value {
 
 // MARK: - Deductions
 
-public enum Deduction: String, Codable, CaseIterable {
+enum Deduction: String, Codable, CaseIterable {
   case targetMovedToNeighborhoodBecauseOfBookshop
   case targetIsInterestedInBooksAboutOccultRituals
   case targetIsFeedingSomething
@@ -46,7 +52,7 @@ extension SimpleStory.World {
 
 // MARK: - DiscoveredPlaces
 
-public enum Place: String, Codable {
+enum Place: String, Codable {
   case bookshop
   case groceryStore
   case darkAlley
@@ -114,52 +120,50 @@ extension SimpleStory.World {
   }
 }
 
-func checkMentalHealth<Scene: SceneType>() -> [SceneStep<Scene>] where Scene.Game == SimpleStory {
-  group {
-    check {
+extension DO where Scene.Game == SimpleStory {
+  static func checkMentalHealth() -> SceneStep<Scene> {
+    DO.check {
       switch $0.world.mentalHealth {
       case 0:
-        tell {
-          "Suddenly, you feel agitated and paranoid"
-          "You're senses are leaving you..."
-          "It's like falling asleep..."
-        }.then {
-          .transitionTo(PassedOut())
-        }
+          .tell {
+            "Suddenly, you feel agitated and paranoid"
+            "You're senses are leaving you..."
+            "It's like falling asleep..."
+          } then: {
+            .transitionTo(PassedOut())
+          }
 
       case 1 where !$0.script.didNarrate(.gotToMentalHealth1):
-        tell {
-          "You feel confused"
-          "It seems like you're sweating"
-          "You're hands are shaking a bit".with(id: .gotToMentalHealth1)
-        }
+          .tell {
+            "You feel confused"
+            "It seems like you're sweating"
+            "You're hands are shaking a bit".with(id: .gotToMentalHealth1)
+          }
 
       case 2 where !$0.script.didNarrate(.gotToMentalHealth2):
-        tell {
-          "You feel a little disoriented"
-          "It seems like someone is following you"
-          "Or maybe you're being watched"
-          "You can't say, but you better watch you back".with(id: .gotToMentalHealth2)
-        }
+          .tell {
+            "You feel a little disoriented"
+            "It seems like someone is following you"
+            "Or maybe you're being watched"
+            "You can't say, but you better watch you back".with(id: .gotToMentalHealth2)
+          }
 
       case 3 where !$0.script.didNarrate(.gotToMentalHealth3):
-        tell {
-          "You feel a little dizzy"
-          "Maybe you're just tired"
-          "Let's hope this case ends soon".with(id: .gotToMentalHealth3)
-        }
+          .tell {
+            "You feel a little dizzy"
+            "Maybe you're just tired"
+            "Let's hope this case ends soon".with(id: .gotToMentalHealth3)
+          }
 
       default:
-        skip()
+          .skip
       }
     }
   }
 }
 
-public struct PassedOut: SceneType {
-  public init() {}
-
-  public var steps: Steps {
+struct PassedOut: SceneType {
+  var steps: Steps {
     "You fall on the ground"
     "You're eyes are closing"
     "With the last light, you see a strange creature in the distance"
@@ -204,21 +208,21 @@ extension SimpleStory.World {
   var targetPersonPronoun: (they: String, their: String, them: String) {
     switch value[.targetPersonSex] {
     case .male?:
-      return (
+      (
         they: "he",
         their: "his",
         them: "him"
       )
 
     case .female?:
-      return (
+      (
         they: "she",
         their: "her",
         them: "her"
       )
 
     default:
-      return (
+      (
         they: "they",
         their: "their",
         them: "them"

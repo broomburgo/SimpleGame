@@ -1,14 +1,15 @@
 {
+  "originHash" : "b63109be519e06fdb4022a6d85e80858088251eb001cf172aebd6049416bca6b",
   "pins" : [
     {
       "identity" : "narratore",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/broomburgo/Narratore",
+      "location" : "https://github.com/broomburgo/Narratore.git",
       "state" : {
-        "revision" : "1cb7fd95c6e3ca670c057afcd6c738dcc9527c41",
-        "version" : "0.2.0"
+        "revision" : "18a9cb486e1b2e0d9a1239ba74736cdd588a2ac1",
+        "version" : "0.3.0"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

@@ -4,12 +4,12 @@ import Narratore
 private let directoryPath = "SimpleGameSupportingFiles"
 private let filePath = "\(directoryPath)/Status.json"
 
-public final class SimpleHandler<Game: Story> {
+public struct SimpleHandler<Game: Story> {
   public init() {}
 
   public func askToRestoreStatusIfPossible() -> Status<Game>? {
     let useFile: Bool
-    if fm.fileExists(atPath: filePath) {
+    if FileManager.default.fileExists(atPath: filePath) {
       print("""
       A Narratore status file was found at '\(filePath)': do you want to continue where you left?
       "[Valid inputs: y, n. Hit RETURN after entering a valid input.]"
@@ -43,7 +43,6 @@ public final class SimpleHandler<Game: Story> {
 
   private let encoder = JSONEncoder()
   private let decoder = JSONDecoder()
-  private let fm = FileManager.default
 
   private func input(accepted: [String]) -> String {
     while true {
@@ -95,9 +94,9 @@ extension SimpleHandler: Handler {
       guard let data = try? encoder.encode(status) else {
         break
       }
-      let currentDirectory = fm.currentDirectoryPath
-      try? fm.createDirectory(atPath: "\(currentDirectory)/\(directoryPath)", withIntermediateDirectories: true)
-      try? fm.removeItem(atPath: "\(currentDirectory)/\(filePath)")
+      let currentDirectory = FileManager.default.currentDirectoryPath
+      try? FileManager.default.createDirectory(atPath: "\(currentDirectory)/\(directoryPath)", withIntermediateDirectories: true)
+      try? FileManager.default.removeItem(atPath: "\(currentDirectory)/\(filePath)")
       try? data.write(to: URL(fileURLWithPath: "\(currentDirectory)/\(filePath)"))
 
     case .gameStarted(let status):
@@ -132,7 +131,7 @@ extension SimpleHandler: Handler {
 
     case .gameEnded:
       print("The story ended. Until next time.")
-      try? fm.removeItem(atPath: filePath)
+      try? FileManager.default.removeItem(atPath: filePath)
 
     case .errorProduced(let failure):
       print("ERROR: \(failure)")

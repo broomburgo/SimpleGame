@@ -1,14 +1,14 @@
 import Narratore
 import SimpleSetting
 
-public struct DarkAlley: SceneType {
+struct DarkAlley: SceneType {
   private let shouldHearBookshopTrashing: Bool
 
-  public init(world: Game.World) {
+  init(world: Game.World) {
     shouldHearBookshopTrashing = !world.wasTheBookshopTrashed
   }
 
-  public var steps: Steps {
+  var steps: Steps {
     if !shouldHearBookshopTrashing {
       "Same dark alley as before"
       "Nothing more to see here"
@@ -17,9 +17,9 @@ public struct DarkAlley: SceneType {
       "Not much to say, actually"
       "Garbage bins, here and there"
 
-      check {
-        if $0.world.theCreatureLookedLike == .aDarkShadow {
-          tell {
+      DO.check {
+        .inCase($0.world.theCreatureLookedLike == .aDarkShadow) {
+          .tell {
             "The only thing that could lurk here is the shadow that you were dreaming about"
             "But that was just a dream"
             "..."
@@ -28,17 +28,19 @@ public struct DarkAlley: SceneType {
         }
       }
 
-      check {
-        if $0.world.theCreatureLookedLike == .aDarkShadow {
-          choose {
+      DO.check {
+        .inCase($0.world.theCreatureLookedLike == .aDarkShadow) {
+          .choose {
             "It was just a dream".onSelect {
-              "Yes, it was".with {
+              .tell {
+                "Yes, it was"
+              } update: {
                 $0.increaseMentalHealth()
               }
             }
 
             "Maybe... not?".onSelect {
-              tell {
+              .tell {
                 "Maybe not"
                 "These thoughts are not helping..."
               } update: {
@@ -49,15 +51,15 @@ public struct DarkAlley: SceneType {
         }
       }
 
-      checkMentalHealth()
+      DO.checkMentalHealth()
 
       "But you notice something weird"
       "A bunch of flattened cardboard boxes, stacked against a wall near one of the bins"
       "You don't know why, but they picked your curiosity"
 
-      choose {
+      DO.choose {
         "I bet there's a corpse underneath".onSelect {
-          tell {
+          .tell {
             "There must be a corpse underneath"
             "You're a private investigator, this is an investigation, and you're in a dark alley"
             "A corpse must be involved in this".with(id: .didSpeculatedAboutTheCorpse)
@@ -66,7 +68,7 @@ public struct DarkAlley: SceneType {
 
         if $0.world.theCreatureLookedLike == .anAlienBeing {
           "Maybe that alien that I was dreaming about".onSelect {
-            tell {
+            .tell {
               "Maybe that alien"
               "You dreamed about it, it must mean something"
               "Or alternatively..."
@@ -76,15 +78,19 @@ public struct DarkAlley: SceneType {
         }
 
         "Let's not linger and move the boxes".onSelect {
-          "Maybe it's the investigator 6th sense"
+          .tell {
+            "Maybe it's the investigator 6th sense"
+          }
         }
       }
 
       "You move the cardboard boxes"
 
-      check {
-        if $0.script.didNarrate(.didSpeculatedAboutTheCorpse) {
-          "Of course there's no corpse underneath"
+      DO.check {
+        .inCase($0.script.didNarrate(.didSpeculatedAboutTheCorpse)) {
+          .tell {
+            "Of course there's no corpse underneath"
+          }
         }
       }
 
@@ -96,15 +102,19 @@ public struct DarkAlley: SceneType {
       "You have no idea what's that about, but then you remember"
       "The grocery store owner told that the person that you're looking for seemed to be dumping here a bunch of bean cans"
 
-      check {
-        "Maybe \($0.world.targetPersonPronoun.they) dumped that in this hole?"
+      DO.check {
+        let pronoun = $0.world.targetPersonPronoun.they
+
+        return .tell {
+          "Maybe \(pronoun) dumped that in this hole?"
+        }
       }
 
-      choose {
+      DO.choose {
         let (they, their, them) = $0.world.targetPersonPronoun
 
         "\(they.capitalized) must be \"feeding\" something".onSelect {
-          tell {
+          .tell {
             "\(they.capitalized) must be \"feeding\" something"
             "And whatever it is, it must be close"
           } update: {
@@ -113,7 +123,7 @@ public struct DarkAlley: SceneType {
         }
 
         "\(they.capitalized) really hates beans".onSelect {
-          tell {
+          .tell {
             "\(they.capitalized) really hates beans"
             "And \(they) wants to devoid the world of them"
             "You can almost hear \(them): 'away with those goddamn beans'"
@@ -121,7 +131,7 @@ public struct DarkAlley: SceneType {
         }
 
         "\(they.capitalized) is nuts".onSelect {
-          tell {
+          .tell {
             "\(they.capitalized) is nuts"
             "It's simple"
             "You need to ask more money to \(their) parents"
