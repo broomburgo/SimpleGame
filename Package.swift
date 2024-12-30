@@ -29,7 +29,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(path: "../Narratore"),
+    .package(url: "https://github.com/broomburgo/Narratore.git", exact: "0.3.0"),
   ],
   targets: [
     .executableTarget(
